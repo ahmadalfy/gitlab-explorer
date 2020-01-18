@@ -1,0 +1,45 @@
+.groups {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.group {
+	flex-basis: 200px;
+	list-style: none;
+	text-align: center;
+	margin: 10px;
+	padding: 15px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+	transition: 0.5s ease box-shadow;
+}
+
+.group:hover {
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.group img {
+	width: 64px;
+	height: 64px;
+	object-fit: contain;
+	display: block;
+	margin: 0 auto 15px;
+}
+
+.group__actions {
+	font-size: 12px;
+}
+
+.group__actions a:hover {
+	cursor: pointer;
+	color: #e6646e;
+}
+
+.group__actions a + a {
+	margin-inline-start: 10px;
+}
+
+.group__actions a + a::before {
+	content: "|";
+	margin-inline-end: 10px;
+	color: #000;
+}

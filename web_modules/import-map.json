@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "dexie": "./dexie.js",
+    "dexie-relationships": "./dexie-relationships.js",
+    "javascript-time-ago": "./javascript-time-ago.js",
+    "javascript-time-ago/locale/en/index": "./javascript-time-ago/locale/en/index.js",
+    "lit-html": "./lit-html.js"
+  }
+}

@@ -1,0 +1,41 @@
+.panel {
+	border: 1px solid #eee;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.panel__head {
+	display: flex;
+}
+
+.panel__title {
+	font-size: 16px;
+	margin: 0;
+}
+
+.panel__actions {
+	margin-inline-start: auto;
+}
+
+.panel__actions button {
+	font-size: 12px;
+	border: 1px solid #eee;
+}
+
+.panel__content {
+	height: calc(100% - 60px);
+	border: 1px solid #eee;
+	overflow: auto;
+}
+
+.panel__footer {
+	display: flex;
+	justify-content: space-between;
+	font-size: 12px;
+}
+
+.panel__footer p {
+	margin: 0;
+}

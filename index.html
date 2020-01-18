@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Gitlab Statistics</title>
+		<link rel="stylesheet" href="styles/main.css" />
+	</head>
+	<body>
+		<div id="app" class="layout-container">
+			<div class="panel">
+				<div class="panel__head">
+					<h1 class="panel__title">Groups</h1>
+					<div class="panel__actions"><button id="load-groups">Load Groups</button></div>
+				</div>
+				<div class="panel__content">
+					<div id="groups-content"></div>
+				</div>
+				<div class="panel__footer">
+					<p>Total count: <span id="groups-count">loading</span></p>
+					<p>Last update: <span id="groups-update">loading</span></p>
+				</div>
+			</div>
+			<div class="panel">
+				<div class="panel__head">
+					<h1 class="panel__title">Projects</h1>
+					<div class="panel__actions"><button id="load-projects">Load Projects</button></div>
+				</div>
+				<div class="panel__content">
+					<div id="projects-content"></div>
+				</div>
+				<div class="panel__footer">
+					<p>Total count: <span id="projects-count"></span></p>
+					<p>Last update: <span id="projects-update"></span></p>
+				</div>
+			</div>
+			<div class="panel members-area">
+				<div class="panel__head">
+					<h1 class="panel__title">Members</h1>
+					<div class="panel__actions"><button id="load-members">Load Members</button></div>
+				</div>
+				<div class="panel__content">
+					<div id="members-content"></div>
+				</div>
+				<div class="panel__footer">
+					<p>Total count: <span id="members-count"></span></p>
+					<p>Last update: <span id="members-update"></span></p>
+				</div>
+			</div>
+		</div>
+		<script type="module" src="scripts/app.js"></script>
+</body>
+</html>

@@ -4,12 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "snowpack": "snowpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dexie": "^2.0.4",
+    "dexie-relationships": "^1.2.11",
+    "javascript-time-ago": "^2.0.6",
+    "lit-html": "^1.1.2",
     "snowpack": "^1.0.5"
+  },
+  "snowpack": {
+    "webDependencies": [
+      "dexie",
+      "dexie-relationships",
+      "javascript-time-ago",
+      "javascript-time-ago/locale/en/index.js",
+      "lit-html"
+    ]
   }
 }

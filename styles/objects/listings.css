@@ -1,0 +1,28 @@
+.listing {
+	border-collapse: collapse;
+	border: 1px solid #eee;
+	width: 100%;
+}
+
+.listing tr,
+.listing td,
+.listing th {
+	border: 1px solid #eee;
+}
+
+.listing td,
+.listing th {
+	padding: 2px 5px;
+	font-size: 12px;
+}
+
+.listing__avatar {
+	width: 30px;
+	text-align: center;
+}
+
+.listing__avatar img {
+	width: 24px;
+	height: 24px;
+	object-fit: contain;
+}
