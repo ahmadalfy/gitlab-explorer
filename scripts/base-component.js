@@ -28,9 +28,13 @@ class Base {
 		db[this.component].toArray().then(content => {
 			this.drawListing(content);
 			this.dataService.data[this.component] = content;
-			// can get count using count()
-			document.querySelector(`#${this.component}-count`).innerHTML = content.length;
+			this.updateCount(content.length);
 		});
+	}
+
+	updateCount(length) {
+		// can get count using count()
+		document.querySelector(`#${this.component}-count`).innerHTML = length;
 	}
 
 	updateLastModified() {

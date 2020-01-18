@@ -48,6 +48,7 @@ class Groups extends Base {
 			</table>
 		`;
 		render(nodes, document.querySelector('#groups-content'));
+		this.updateCount(groups.length);
 		this.updateLastModified();
 	}
 }
