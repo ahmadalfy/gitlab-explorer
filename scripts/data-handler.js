@@ -13,7 +13,7 @@ class DataSource {
 		if(DataSource.instance){
 			return DataSource.instance;
 		}
-		this.data = { members: [], groups: []};
+		this.data = { members: [], groups: [], projects: []};
 		DataSource.instance = this;
 	}
 
@@ -23,6 +23,18 @@ class DataSource {
 			db.groups.bulkPut(groups);
 			localStorage.setItem('groups', Date.now());
 			return groups;
+		})
+	}
+
+	fetchProjects() {
+		return Projects.load(this.data.groups).then(projects => {
+			this.data.projects = projects.flat();
+			this.data.projects.forEach(project => {
+				project.group_id = project.namespace.id;
+			});
+			db.projects.bulkPut(this.data.projects);
+			localStorage.setItem('projects', Date.now());
+			return projects;
 		})
 	}
 

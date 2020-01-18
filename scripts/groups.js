@@ -18,20 +18,9 @@ class Groups extends Base {
 	// 	return Utilities.req(`${routes.groups}/${groupId}/${routes.members}`);
 	// }
 
-	// static loadGroupProjects(groupId) {
-	// 	return Utilities.req(`${routes.groups}/${groupId}/${routes.projects}`);
-	// }
-
-	// bindEvents() {
-	// 	document.querySelector('#load-groups').addEventListener('click', this.fetchGroups.bind(this));
-	// }
-
-	// fetchGroups() {
-	// 	this.data = new DataSource();
-	// 	this.data.fetchGroups().then(groups => {
-	// 		this.drawGroups(groups);
-	// 	});
-	// }
+	static loadGroupProjects(groupId) {
+		return Utilities.req(`${routes.groups}/${groupId}/${routes.projects}`);
+	}
 
 	drawListing(groups) {
 		const groupsTemplates = [];
@@ -40,9 +29,9 @@ class Groups extends Base {
 				<tr>
 					<td class="listing__avatar"><img src="${group.avatar_url || './images/group.svg'}" alt="${group.name}" /></td>
 					<td>${group.name}</td>
-					<td>
-						<a @click=${()=> {this.showProjects(group.id)}}>Projects</a>
-						<a @click=${()=> {this.showMembers(group.id)}}>Members</a>
+					<td class="listing__actions">
+						<button @click=${()=> {this.showProjects(group.id)}}>Projects</button>
+						<button @click=${()=> {this.showMembers(group.id)}}>Members</button>
 					</td>
 				</tr>
 			`);
@@ -63,19 +52,6 @@ class Groups extends Base {
 		render(nodes, document.querySelector('#groups-content'));
 		this.updateLastModified();
 	}
-
-	// checkData() {
-	// 	db.groups.toArray().then(groups => {
-	// 		this.drawGroups(groups);
-	// 		// can get count using count()
-	// 		document.querySelector('#groups-count').innerHTML = groups.length;
-	// 	});
-	// }
-
-	// updateLastModified() {
-	// 	const lastModified = localStorage.getItem('groups');
-	// 	document.querySelector('#groups-update').innerHTML = lastModified ? timeAgo.format(JSON.parse(lastModified)) : 'Not available';
-	// }
 }
 
 export default Groups;

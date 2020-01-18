@@ -26,3 +26,12 @@
 	height: 24px;
 	object-fit: contain;
 }
+
+.listing__actions {
+	text-align: center;
+}
+
+.listing__actions button {
+	font-size: 12px;
+	border: 1px solid #eee;
+}
