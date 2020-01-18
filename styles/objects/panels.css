@@ -30,6 +30,10 @@
 	overflow: auto;
 }
 
+.panel__content--composite {
+	display: flex;
+}
+
 .panel__footer {
 	display: flex;
 	justify-content: space-between;
@@ -38,4 +42,8 @@
 
 .panel__footer p {
 	margin: 0;
+}
+
+.panel__narrow-content {
+	width: 400px;
 }

@@ -1,9 +1,7 @@
 import { html, render } from '../web_modules/lit-html.js';
 import Utilities from './utilities.js';
 import routes from './routes.js'
-import DataSource from './data-handler.js';
 import Base from './base-component.js';
-import db from './db.js';
 
 class Groups extends Base {
 	constructor() {
@@ -14,9 +12,9 @@ class Groups extends Base {
 		return Utilities.req(routes.groups);
 	}
 
-	// static loadGroupMembers(groupId) {
-	// 	return Utilities.req(`${routes.groups}/${groupId}/${routes.members}`);
-	// }
+	static loadGroupMembers(groupId) {
+		return Utilities.req(`${routes.groups}/${groupId}/${routes.members}`);
+	}
 
 	static loadGroupProjects(groupId) {
 		return Utilities.req(`${routes.groups}/${groupId}/${routes.projects}`);

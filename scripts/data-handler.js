@@ -1,8 +1,6 @@
-import Utilities from './utilities.js';
 import Groups from './groups.js';
 import Projects from './projects.js';
 import Members from './members.js';
-import routes from './routes.js'
 import db from './db.js'
 
 class DataSource {
@@ -38,31 +36,13 @@ class DataSource {
 		})
 	}
 
-	fetchData() {
-		Groups.load().then(groups => {
-			data.groups = groups;
-			db.groups.bulkPut(groups);
-			const projects = Promise.all(groups.map(group => Groups.loadGroupProjects(group.id)));
-			projects.then(projects => {
-				db.projects.bulkPut(projects.flat());
-			});
-			return Promise.all(groups.map(group => Groups.loadGroupMembers(group.id)))
-		})
-		.then(groupMembers => groupMembers.flat())
-		.then(members => {
+	fetchMembers() {
+		return Members.load(this.data.groups).then(members => {
 			const key = 'id';
-			const uniqueMembers = [...new Map(members.map(item =>[item[key], item])).values()];
-			data.members = uniqueMembers;
-			db.members.bulkPut(uniqueMembers);
-			const events = Promise.all(uniqueMembers.map(member => Members.loadMemberEvents(member.id)));
-			events.then(events => {
-				db.events.bulkPut(events.flat());
-			});
-		})
-		.then(events => {
-			data.members.forEach((member, i) => {
-				data.members[i].events = events[i];
-			});
+			this.data.members = [...new Map(members.flat().map(item =>[item[key], item])).values()];
+			db.members.bulkPut(this.data.members);
+			localStorage.setItem('members', Date.now());
+			return members;
 		});
 	}
 }

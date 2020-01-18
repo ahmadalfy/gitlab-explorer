@@ -1,5 +1,3 @@
-import Utilities from './utilities.js';
-import routes from './routes.js'
 import DataSource from './data-handler.js';
 import db from './db.js';
 
