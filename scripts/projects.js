@@ -21,11 +21,12 @@ class Projects extends Base {
 	drawListing(projects) {
 		const projectsTemplates = [];
 		for (const project of projects) {
+			const group = this.dataService.data.groups.find(group => group.id === project.namespace.id);
 			projectsTemplates.push(html`
 				<tr>
 					<td class="listing__avatar"><img src="${project.avatar_url || './images/project.svg'}" alt="${project.name}" /></td>
 					<td>${project.name}</td>
-					<td>${project.group.name}</td>
+					<td>${group ? group.name : '-'}</td>
 					<td>${timeAgo.format(Date.parse(project.last_activity_at))}</td>
 					<td class="listing__actions">
 						<button @click=${()=> {this.showMembers(project.id)}}>Members</button>
@@ -53,10 +54,10 @@ class Projects extends Base {
 	}
 
 	checkData() {
-		db.projects.with({ group: 'group_id'}).then(content => {
-			this.drawListing(content);
-			this.dataService.data[this.component] = content;
-			document.querySelector(`#${this.component}-count`).innerHTML = content.length;
+		db.projects.with({ group: 'group_id'}).then(projects => {
+			this.drawListing(projects);
+			this.dataService.data.projects = projects;
+			document.querySelector('#projects-count').innerHTML = projects.length;
 		});
 	}
 }
