@@ -20,7 +20,7 @@ class DataSource {
 		this.data.groups = groups;
 		db.groups.bulkPut(groups);
 		localStorage.setItem('groups', Date.now());
-		return groups;
+		return this.data.groups;
 	}
 
 	async fetchProjects() {
@@ -31,7 +31,7 @@ class DataSource {
 		});
 		db.projects.bulkPut(this.data.projects);
 		localStorage.setItem('projects', Date.now());
-		return projects;
+		return this.data.projects;
 	}
 
 	async fetchMembers() {
@@ -40,7 +40,7 @@ class DataSource {
 		this.data.members = [...new Map(members.flat().map(item => [item[key], item])).values()];
 		db.members.bulkPut(this.data.members);
 		localStorage.setItem('members', Date.now());
-		return members;
+		return this.data.members;
 	}
 }
 
