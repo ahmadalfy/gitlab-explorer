@@ -77,6 +77,9 @@ class Members extends Base {
 		}
 
 		Highcharts.chart('charts', {
+			chart: {
+				zoomType: 'x',
+			},
 			title: {
 				text: `Activity of ${memberEvents.member.name}`
 			},
