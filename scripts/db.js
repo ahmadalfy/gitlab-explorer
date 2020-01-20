@@ -7,6 +7,7 @@ db.version(1).stores({
 	members: 'id, name, &username',
 	projects: 'id, name, group_id -> groups.id',
 	events: 'created_at, project_id -> projects.id, author_id -> members.id',
+	member_events: 'id++, member_id -> members.id',
 });
 
 export default db;

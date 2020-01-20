@@ -13,6 +13,7 @@
   "dependencies": {
     "dexie": "^2.0.4",
     "dexie-relationships": "^1.2.11",
+    "highcharts": "^8.0.0",
     "javascript-time-ago": "^2.0.6",
     "lit-html": "^1.1.2",
     "snowpack": "^1.0.5"
@@ -21,6 +22,7 @@
     "webDependencies": [
       "dexie",
       "dexie-relationships",
+      "highcharts",
       "javascript-time-ago",
       "javascript-time-ago/locale/en/index.js",
       "lit-html"

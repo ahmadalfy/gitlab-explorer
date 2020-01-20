@@ -34,10 +34,19 @@
 	display: flex;
 }
 
+.panel__composite-layout {
+	display: flex;
+}
+
 .panel__footer {
 	display: flex;
 	justify-content: space-between;
 	font-size: 12px;
+}
+
+.panel__more-content {
+	width: 50%;
+	height: 100%;
 }
 
 .panel__footer p {
@@ -45,5 +54,5 @@
 }
 
 .panel__narrow-content {
-	width: 500px;
+	width: 50%;
 }
