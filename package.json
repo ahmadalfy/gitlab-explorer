@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "snowpack": "snowpack",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "",
     "semantic-release": "semantic-release"
   },
   "keywords": [
