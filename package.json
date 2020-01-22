@@ -14,6 +14,9 @@
     "type" : "git",
     "url" : "https://github.com/ahmadalfy/gitlab-explorer"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "dependencies": {
     "dexie": "^2.0.4",
     "dexie-export-import": "^1.0.0-beta.14",
