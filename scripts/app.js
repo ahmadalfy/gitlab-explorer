@@ -12,7 +12,6 @@ class App {
 		this.groups = new Groups();
 		this.projects = new Projects();
 		this.members = new Members();
-		console.log(this.groups);
 		new RegisterDbOperations(this.checkData.bind(this));
 	}
 
