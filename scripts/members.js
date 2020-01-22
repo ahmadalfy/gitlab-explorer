@@ -59,7 +59,7 @@ class Members extends Base {
 		db.events.bulkPut(events);
 	}
 
-	async displayEvents(memberId) {
+	async prepaeUserData(memberId) {
 		let memberEvents = await db.member_events
 			.where('member_id')
 			.equals(memberId)
@@ -76,12 +76,16 @@ class Members extends Base {
 			formattedData.unshift([today, 0]);
 		}
 
-		Highcharts.chart('charts', {
+		return { data: formattedData.reverse(), memberEvents };
+	}
+
+	drawChart(data, name) {
+		this.chart = Highcharts.chart('charts', {
 			chart: {
 				zoomType: 'x',
 			},
 			title: {
-				text: `Activity of ${memberEvents.member.name}`
+				text: `Activity of ${name}`
 			},
 			subtitle: {
 				text: `Source: Gitlab Activities`
@@ -90,33 +94,39 @@ class Members extends Base {
 				type: 'datetime',
 			},
 			series: [{
-				name: 'Activities',
-				data: formattedData.reverse(),
+				name,
+				data,
 			}],
 			plotOptions: {
 				series: {
 					cursor: 'pointer',
-					// point: {
-					// 	events: {
-					// 		click: function (e) {
-					// 			hs.htmlExpand(null, {
-					// 				pageOrigin: {
-					// 					x: e.pageX || e.clientX,
-					// 					y: e.pageY || e.clientY
-					// 				},
-					// 				headingText: this.series.name,
-					// 				maincontentText: Highcharts.dateFormat('%A, %b %e, %Y', this.x) + ':<br/> ' +
-					// 					this.y + ' sessions',
-					// 				width: 200
-					// 			});
-					// 		}
-					// 	}
-					// },
+					point: {
+						events: {
+							click: function () {
+								console.log(this.category);
+							}
+						}
+					},
 					marker: {
 						lineWidth: 1
 					}
 				}
 			},
+		});
+	}
+
+	async displayEvents(memberId) {
+		const response = await this.prepaeUserData(memberId);
+		const { data, memberEvents: { member : { name }} } = response;
+		this.drawChart(data, name);
+	}
+
+	async appendToChart(memberId) {
+		const response = await this.prepaeUserData(memberId);
+		const { data, memberEvents: { member : { name }} } = response;
+		this.chart.addSeries({
+			name,
+			data,
 		});
 	}
 
@@ -142,8 +152,9 @@ class Members extends Base {
 						member.last_update ? member.last_update : '-'}
 					</td>
 					<td class="listing__actions">
-					<button @click=${(ev)=> {this.getEvents(ev, member.id)}}>Load</button>
-					<button @click=${()=> {this.displayEvents(member.id)}}>Display</button>
+						<button @click=${(ev)=> {this.getEvents(ev, member.id)}}>Load</button>
+						<button @click=${()=> {this.displayEvents(member.id)}}>Display</button>
+						<button @click=${()=> {this.appendToChart(member.id)}}>+</button>
 					</td>
 				</tr>
 			`);
