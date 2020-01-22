@@ -18,7 +18,7 @@
     "highcharts": "^8.0.0",
     "javascript-time-ago": "^2.0.6",
     "lit-html": "^1.1.2",
-    "snowpack": "^1.0.5"
+    "snowpack": "^1.1.0"
   },
   "snowpack": {
     "webDependencies": [
