@@ -1,7 +1,7 @@
 .layout-container {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	grid-template-rows: 45% 55%;
+	grid-template-rows: 20px calc(45% - 40px) 55%;
 	height: 100vh;
 	grid-gap: 10px;
 	padding: 10px;

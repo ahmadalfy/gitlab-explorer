@@ -1,4 +1,5 @@
 import Dexie from '../web_modules/dexie.js';
+import '../web_modules/dexie-export-import.js';
 import relationships from '../web_modules/dexie-relationships.js';
 
 const db = new Dexie('gitlab', {addons: [relationships]});

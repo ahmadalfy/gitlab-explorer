@@ -1,7 +1,9 @@
 {
   "imports": {
     "dexie": "./dexie.js",
+    "dexie-export-import": "./dexie-export-import.js",
     "dexie-relationships": "./dexie-relationships.js",
+    "downloadjs": "./downloadjs.js",
     "highcharts": "./highcharts.js",
     "javascript-time-ago": "./javascript-time-ago.js",
     "javascript-time-ago/locale/en/index": "./javascript-time-ago/locale/en/index.js",

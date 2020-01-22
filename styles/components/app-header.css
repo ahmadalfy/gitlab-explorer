@@ -1,0 +1,20 @@
+.app__header {
+	display: flex;
+	justify-content: space-between;
+	grid-column-start: 1;
+	grid-column-end: 3;
+}
+
+.app__header h1 {
+	margin: 0;
+	font-size: 16px;
+}
+
+.app__header p {
+	margin: 0;
+}
+
+.app__header button {
+	border: 1px solid #eee;
+	font-size: 12px;
+}

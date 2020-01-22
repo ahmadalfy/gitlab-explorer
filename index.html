@@ -5,7 +5,16 @@
 		<link rel="stylesheet" href="styles/main.css" />
 	</head>
 	<body>
-		<div id="app" class="layout-container">
+		<div id="app" class="app layout-container">
+			<header class="app__header">
+				<h1>Gitlab Explorer</h1>
+				<p>
+					<input type="file" id="file-uploader" style="display:none" />
+					<button id="import-db">Import Database</button>
+					<button id="export-db">Export Database</button>
+					<button id="delete-db">Delete Database</button>
+				</p>
+			</header>
 			<div class="panel">
 				<div class="panel__head">
 					<h1 class="panel__title">Groups</h1>
