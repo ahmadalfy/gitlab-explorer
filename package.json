@@ -1,15 +1,19 @@
 {
   "name": "gitlab-stats",
   "version": "1.0.0",
-  "description": "",
+  "description": "Gitlab Explorer is a tool to visualize your groups, repositories, members and activities in your Gitlab space",
   "main": "index.js",
   "scripts": {
     "snowpack": "snowpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["gitlab", "data-visualization", "tools-engineering"],
+  "author": "Ahmad El-Alfy",
   "license": "ISC",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/ahmadalfy/gitlab-explorer"
+  },
   "dependencies": {
     "dexie": "^2.0.4",
     "dexie-export-import": "^1.0.0-beta.14",
@@ -17,7 +21,9 @@
     "downloadjs": "^1.4.7",
     "highcharts": "^8.0.0",
     "javascript-time-ago": "^2.0.6",
-    "lit-html": "^1.1.2",
+    "lit-html": "^1.1.2"
+  },
+  "devDependencies": {
     "snowpack": "^1.1.0"
   },
   "snowpack": {
