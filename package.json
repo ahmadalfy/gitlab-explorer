@@ -1,18 +1,23 @@
 {
   "name": "gitlab-stats",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "Gitlab Explorer is a tool to visualize your groups, repositories, members and activities in your Gitlab space",
   "main": "index.js",
   "scripts": {
     "snowpack": "snowpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "semantic-release": "semantic-release"
   },
-  "keywords": ["gitlab", "data-visualization", "tools-engineering"],
+  "keywords": [
+    "gitlab",
+    "data-visualization",
+    "tools-engineering"
+  ],
   "author": "Ahmad El-Alfy",
   "license": "ISC",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/ahmadalfy/gitlab-explorer"
+    "type": "git",
+    "url": "https://github.com/ahmadalfy/gitlab-explorer"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
@@ -27,6 +32,10 @@
     "lit-html": "^1.1.2"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^3.0.6",
+    "@semantic-release/git": "^8.0.0",
+    "@semantic-release/release-notes-generator": "^7.3.5",
+    "semantic-release": "^16.0.3",
     "snowpack": "^1.1.0"
   },
   "snowpack": {

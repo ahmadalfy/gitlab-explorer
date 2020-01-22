@@ -31,7 +31,13 @@
 			<div class="panel">
 				<div class="panel__head">
 					<h1 class="panel__title">Projects</h1>
-					<div class="panel__actions"><button id="load-projects">Load Projects</button></div>
+					<div class="panel__actions">
+						<label for="filter-projects-by-group">Group</label>
+						<select id="filter-project-by-group">
+							<option value="" selected>All</option>
+						</select>
+						<button id="load-projects">Load Projects</button>
+					</div>
 				</div>
 				<div class="panel__content">
 					<div id="projects-content"></div>
