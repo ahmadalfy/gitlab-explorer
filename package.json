@@ -36,7 +36,7 @@
     "@semantic-release/git": "^8.0.0",
     "@semantic-release/release-notes-generator": "^7.3.5",
     "semantic-release": "^16.0.3",
-    "snowpack": "^1.1.0"
+    "snowpack": "^1.1.2"
   },
   "snowpack": {
     "webDependencies": [
