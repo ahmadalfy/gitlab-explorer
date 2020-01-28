@@ -32,7 +32,7 @@
     "lit-html": "^1.1.2"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "^3.0.6",
+    "@semantic-release/changelog": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
     "@semantic-release/release-notes-generator": "^9.0.0",
     "semantic-release": "^16.0.4",
