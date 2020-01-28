@@ -34,7 +34,7 @@
   "devDependencies": {
     "@semantic-release/changelog": "^3.0.6",
     "@semantic-release/git": "^8.0.0",
-    "@semantic-release/release-notes-generator": "^7.3.5",
+    "@semantic-release/release-notes-generator": "^9.0.0",
     "semantic-release": "^16.0.4",
     "snowpack": "^1.1.2"
   },
