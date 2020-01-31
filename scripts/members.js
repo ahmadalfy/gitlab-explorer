@@ -158,10 +158,40 @@ class Members extends Base {
 		});
 	}
 
+	prepareChartFilters() {
+		const dates = [
+			{
+				label: 'Last week',
+				value: 1000 * 60 * 60 * 24 * 7
+			},
+			{
+				label: '2 weeks ago',
+				value: 1000 * 60 * 60 * 24 * 14
+			},
+			{
+				label: 'Last month',
+				value: 1000 * 60 * 60 * 24 * 30
+			},
+		];
+		const today = +(new Date());
+		const zoomOptions = [];
+		for (const date of dates) {
+			zoomOptions.push(html`
+				<button @click=${() => {
+					this.chart.xAxis[0].setExtremes((today - date.value), today);
+					this.chart.showResetZoom();
+				}}>${date.label}</button>
+			`);
+		}
+		const buttons = html`${zoomOptions}`;
+		render(buttons, document.querySelector('#zoom-options'));
+	}
+
 	async displayEvents(memberId) {
 		const response = await this.prepaeUserData(memberId);
 		const { data, memberEvents: { member : { name }} } = response;
 		this.drawChart(data, name);
+		this.prepareChartFilters();
 	}
 
 	async appendToChart(memberId) {
