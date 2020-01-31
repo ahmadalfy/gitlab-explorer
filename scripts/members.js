@@ -62,18 +62,20 @@ class Members extends Base {
 		}, {});
 		/** Get the user's previous data from the 'member_events' table and merge both */
 		const member = await db.member_events.get({ member_id: memberId });
-		for (const eventDate in member.events) {
-			if (!groupedEvents[eventDate]) {
-				// If the event date doesn't exist in the new data, add it to the grouped events
-				groupedEvents[eventDate] = member.events[eventDate];
-			} else {
-				// If the event date exist, check if the event itself existing or not. If not, push it.
-				member.events[eventDate].forEach(memberEvent => {
-					const foundEvent = groupedEvents[eventDate].find(groupedEvent => groupedEvent.created_at === memberEvent.created_at);
-					if (!foundEvent) {
-						groupedEvents[eventDate].push(memberEvent);
-					}
-				})
+		if (member) {
+			for (const eventDate in member.events) {
+				if (!groupedEvents[eventDate]) {
+					// If the event date doesn't exist in the new data, add it to the grouped events
+					groupedEvents[eventDate] = member.events[eventDate];
+				} else {
+					// If the event date exist, check if the event itself existing or not. If not, push it.
+					member.events[eventDate].forEach(memberEvent => {
+						const foundEvent = groupedEvents[eventDate].find(groupedEvent => groupedEvent.created_at === memberEvent.created_at);
+						if (!foundEvent) {
+							groupedEvents[eventDate].push(memberEvent);
+						}
+					})
+				}
 			}
 		}
 		const data = {
