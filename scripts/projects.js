@@ -18,6 +18,24 @@ class Projects extends Base {
 				type: 'list',
 				items: {},
 			},
+			date: {
+				node: 'select',
+				type: 'date',
+				items: [
+					{
+						label: 'Last week',
+						value: 1000 * 60 * 60 * 24 * 7
+					},
+					{
+						label: '2 weeks ago',
+						value: 1000 * 60 * 60 * 24 * 14
+					},
+					{
+						label: 'Last month',
+						value: 1000 * 60 * 60 * 24 * 30
+					},
+				]
+			}
 		};
 	}
 
@@ -41,7 +59,7 @@ class Projects extends Base {
 					<td class="listing__avatar"><img src="${project.avatar_url || './images/project.svg'}" alt="${project.name}" /></td>
 					<td data-key="name">${project.name}</td>
 					<td data-key="group" data-value="${group?.id}">${group?.name || '-'}</td>
-					<td>${timeAgo.format(Date.parse(project.last_activity_at))}</td>
+					<td data-key="date" data-value="${Date.parse(project.last_activity_at)}">${timeAgo.format(Date.parse(project.last_activity_at))}</td>
 					<td class="listing__actions">
 						<button @click=${()=> {this.showMembers(project.id)}}>Members</button>
 					</td>

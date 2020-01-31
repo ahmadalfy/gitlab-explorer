@@ -28,7 +28,7 @@ class Base {
 		});
 	}
 
-	drawListing(content) {
+	drawListing() {
 		this.updateLastModified();
 	}
 
@@ -60,26 +60,35 @@ class Base {
 
 	createFilter(key, details) {
 		let container;
+		let optionsTemplate;
 		if (details.node === 'select') {
-			const orderedFilter = Object.entries(this.filtrationKeys[key].items).sort(function (a, b) {
-				if (a[1].toLowerCase() > b[1].toLowerCase()) {
-					return 1;
-				}
-				if (b[1].toLowerCase() > a[1].toLowerCase()) {
-					return -1;
-				}
-				return 0;
-			});
-			const optionsTemplate = [html`<option value="" selected>All</option>`];
-			orderedFilter.forEach( item => {
-				optionsTemplate.push(html`
-					<option value="${item[0]}">${item[1]}</option>
-				`);
-			});
-
+			if (details.type === 'list') {
+				const orderedFilter = Object.entries(this.filtrationKeys[key].items).sort(function (a, b) {
+					if (a[1].toLowerCase() > b[1].toLowerCase()) {
+						return 1;
+					}
+					if (b[1].toLowerCase() > a[1].toLowerCase()) {
+						return -1;
+					}
+					return 0;
+				});
+				optionsTemplate = [html`<option value="" selected>All</option>`];
+				orderedFilter.forEach( item => {
+					optionsTemplate.push(html`
+						<option value="${item[0]}">${item[1]}</option>
+					`);
+				});
+			} else if (details.type === 'date') {
+				optionsTemplate = [html`<option value="" selected>All</option>`];
+				details.items.forEach(item => {
+					optionsTemplate.push(html`
+						<option value="${item.value}">${item.label}</option>
+					`);
+				})
+			}
 			container = html`
 				<label for="filter-${this.component}-by-${key}">${key}</label>
-				<select id="filter-${this.component}-by-${key}" @change=${(ev)=> {this.updateListing(ev, key)}}>
+				<select id="filter-${this.component}-by-${key}" @change=${(ev)=> {this.updateListing(ev, key, details.type)}}>
 					${optionsTemplate}
 				</select>
 			`;
@@ -108,14 +117,22 @@ class Base {
 		});
 	}
 
-	updateListing(ev, key) {
-		const { value } = ev.target;
+	updateListing(ev, key, type) {
+		let { value } = ev.target;
+		let match;
+		if (type === 'date' && value !== '') {
+			value = +new Date - value;
+		}
 		const rows = this.panel.content.querySelectorAll('tr');
 		rows.forEach(row => {
 			if (value === '') {
 				row.style.display = 'table-row';
 			} else {
-				const match = row.querySelector(`td[data-key=${key}]`)?.dataset.value === value;
+				if (type === 'date') {
+					match = row.querySelector(`td[data-key=${key}]`)?.dataset.value > value;
+				} else {
+					match = row.querySelector(`td[data-key=${key}]`)?.dataset.value === value;
+				}
 				if (match) {
 					row.style.display = 'table-row';
 				} else {
