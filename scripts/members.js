@@ -44,9 +44,11 @@ class Members extends Base {
 		}
 		/**
 		 * Loop through the events and add a new key 'creation_day' to be used to group the events
-		 * later on to find out how many activity done per day. We set the time to zeros.
+		 * later on to find out how many activity done per day. We set the time to zeros and remove
+		 * the author object because it's not necessary.
 		 */
 		events.forEach(event => {
+			delete event.author;
 			event.creation_day = new Date(event.created_at).setHours(0, 0, 0, 0);
 		});
 		/**
@@ -124,7 +126,8 @@ class Members extends Base {
 		return { data: formattedData.reverse(), memberEvents };
 	}
 
-	drawChart(data, name) {
+	drawChart(data, name, id) {
+		const that = this;
 		this.chart = Highcharts.chart('charts', {
 			chart: {
 				zoomType: 'x',
@@ -148,7 +151,7 @@ class Members extends Base {
 					point: {
 						events: {
 							click: function () {
-								console.log(this.category);
+								that.getEventsByDate(this.category, id);
 							}
 						}
 					},
@@ -158,6 +161,11 @@ class Members extends Base {
 				}
 			},
 		});
+	}
+
+	async getEventsByDate(day, id) {
+		const member = await db.member_events.get({ member_id: id });
+		console.log(member.events[day]);
 	}
 
 	prepareChartFilters() {
@@ -192,7 +200,7 @@ class Members extends Base {
 	async displayEvents(memberId) {
 		const response = await this.prepaeUserData(memberId);
 		const { data, memberEvents: { member : { name }} } = response;
-		this.drawChart(data, name);
+		this.drawChart(data, name, memberId);
 		this.prepareChartFilters();
 	}
 
