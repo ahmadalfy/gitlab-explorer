@@ -103,8 +103,7 @@ class Base {
 
 	searchListing(ev, column) {
 		const filter = ev.target.value.toUpperCase();
-		const listing = this.panel.content.querySelector('table');
-		const rows = listing.querySelectorAll('tr');
+		const rows = this.panel.content.querySelectorAll('tbody tr');
 		rows.forEach(row => {
 			const cells = row.querySelectorAll(`td[data-key="${column}"]`);
 			cells.forEach(cell => {
@@ -123,7 +122,7 @@ class Base {
 		if (type === 'date' && value !== '') {
 			value = +new Date - value;
 		}
-		const rows = this.panel.content.querySelectorAll('tr');
+		const rows = this.panel.content.querySelectorAll('tbody tr');
 		rows.forEach(row => {
 			if (value === '') {
 				row.style.display = 'table-row';
