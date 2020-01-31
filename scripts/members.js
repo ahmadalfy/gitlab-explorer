@@ -9,6 +9,12 @@ import db from './db.js';
 class Members extends Base {
 	constructor() {
 		super('members');
+		this.filtrationKeys = {
+			name: {
+				type: 'search',
+				column: 'name',
+			},
+		};
 	}
 
 	static load(groups) {
@@ -140,7 +146,7 @@ class Members extends Base {
 							<img src="${member.avatar_url}" alt="${member.name}" />
 						</a>
 					</td>
-					<td>${member.name}</td>
+					<td data-key="name">${member.name}</td>
 					<td class="member-activity">
 						${member.last_activity && member.last_activity !== 'NA' ?
 							timeAgo.format(Date.parse(member.last_activity)) :
@@ -177,6 +183,7 @@ class Members extends Base {
 		render(nodes, document.querySelector('#members-content'));
 		this.updateCount(members.length);
 		this.updateLastModified();
+		this.prepareFilters();
 	}
 }
 

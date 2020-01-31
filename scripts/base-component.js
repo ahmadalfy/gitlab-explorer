@@ -1,10 +1,18 @@
+import { html, render } from '../web_modules/lit-html.js';
 import DataSource from './data-handler.js';
+import Utilities from './utilities.js';
 import db from './db.js';
 
 class Base {
 	constructor(component) {
 		this.component = component;
+
+		this.panel = {
+			content: document.querySelector(`#${this.component}-content`),
+			actionsList: document.querySelector(`#${this.component}-filters`),
+		}
 		this.dataService = new DataSource();
+		this.searchListing = Utilities.debounce(this.searchListing, 250);
 		this.checkData();
 		this.bindEvents();
 	}
@@ -40,6 +48,81 @@ class Base {
 	updateLastModified() {
 		const lastModified = localStorage.getItem(this.component);
 		document.querySelector(`#${this.component}-update`).innerHTML = lastModified ? timeAgo.format(JSON.parse(lastModified)) : 'Not available';
+	}
+
+	prepareFilters() {
+		this.filters = [];
+		for (const key in this.filtrationKeys) {
+			this.filters.push(this.createFilter(key, this.filtrationKeys[key]));
+		}
+		render(this.filters, this.panel.actionsList);
+	}
+
+	createFilter(key, details) {
+		let container;
+		if (details.node === 'select') {
+			const orderedFilter = Object.entries(this.filtrationKeys[key].items).sort(function (a, b) {
+				if (a[1].toLowerCase() > b[1].toLowerCase()) {
+					return 1;
+				}
+				if (b[1].toLowerCase() > a[1].toLowerCase()) {
+					return -1;
+				}
+				return 0;
+			});
+			const optionsTemplate = [html`<option value="" selected>All</option>`];
+			orderedFilter.forEach( item => {
+				optionsTemplate.push(html`
+					<option value="${item[0]}">${item[1]}</option>
+				`);
+			});
+
+			container = html`
+				<label for="filter-${this.component}-by-${key}">${key}</label>
+				<select id="filter-${this.component}-by-${key}" @change=${(ev)=> {this.updateListing(ev, key)}}>
+					${optionsTemplate}
+				</select>
+			`;
+		} else if (details.type === 'search') {
+			container = html`
+				<label class="visually-hidden" for="text-search-by-${key}">Search</label>
+				<input type="search" @keyup=${(ev) => { this.searchListing(ev, details.column) }} id="text-search-by-${key}" placeholder="Search" />
+			`
+		}
+		return container;
+	}
+
+	searchListing(ev, column) {
+		const filter = ev.target.value.toUpperCase();
+		const listing = this.panel.content.querySelector('table');
+		const rows = listing.querySelectorAll('tr');
+		rows.forEach(row => {
+			const cells = row.querySelectorAll(`td[data-key="${column}"]`);
+			cells.forEach(cell => {
+				if (cell.innerText.toUpperCase().indexOf(filter) > -1) {
+					row.style.display = 'table-row';
+				} else {
+					row.style.display = 'none';
+				}
+			});
+		});
+	}
+
+	updateListing(ev, key) {
+		const { value } = ev.target;
+		const rows = this.panel.content.querySelectorAll('tr');
+		rows.forEach(row => {
+			if (value === '') {
+				row.style.display = 'table-row';
+			} else {
+				const match = row.querySelector(`td[data-key=${key}]`)?.dataset.value === value;
+				if (match) {
+					row.style.display = 'table-row';
+				} else {
+					row.style.display = 'none';
+				}
+			}
+		});
 	}
 }
 

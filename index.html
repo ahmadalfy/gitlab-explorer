@@ -18,7 +18,10 @@
 			<div class="panel">
 				<div class="panel__head">
 					<h1 class="panel__title">Groups</h1>
-					<div class="panel__actions"><button id="load-groups">Load Groups</button></div>
+					<div class="panel__actions">
+						<div class="panel__actions-list" id="groups-filters"></div>
+						<button id="load-groups">Load Groups</button>
+					</div>
 				</div>
 				<div class="panel__content">
 					<div id="groups-content"></div>
@@ -32,10 +35,7 @@
 				<div class="panel__head">
 					<h1 class="panel__title">Projects</h1>
 					<div class="panel__actions">
-						<label for="filter-projects-by-group">Group</label>
-						<select id="filter-project-by-group">
-							<option value="" selected>All</option>
-						</select>
+						<div class="panel__actions-list" id="projects-filters"></div>
 						<button id="load-projects">Load Projects</button>
 					</div>
 				</div>
@@ -50,7 +50,10 @@
 			<div class="panel">
 				<div class="panel__head">
 					<h1 class="panel__title">Members</h1>
-					<div class="panel__actions"><button id="load-members">Load Members</button></div>
+					<div class="panel__actions">
+						<div class="panel__actions-list" id="members-filters"></div>
+						<button id="load-members">Load Members</button>
+					</div>
 				</div>
 				<div class="panel__content">
 					<div id="members-content" ></div>
