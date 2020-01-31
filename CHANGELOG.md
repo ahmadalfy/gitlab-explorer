@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.0.0...v1.1.0) (2020-01-31)
+
+
+### Features
+
+* Add basic filtration function to panels ([97382f8](https://github.com/ahmadalfy/gitlab-explorer/commit/97382f8ed7506d381ececc6fdafbbff67a723175))
+* Add free text search for table ([8e2bb37](https://github.com/ahmadalfy/gitlab-explorer/commit/8e2bb37867e827587c2730d97ba6319246e3d7f1))
+
 # 1.0.0 (2020-01-22)
 
 
