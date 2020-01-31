@@ -6,6 +6,12 @@ import Base from './base-component.js';
 class Groups extends Base {
 	constructor() {
 		super('groups');
+		this.filtrationKeys = {
+			name: {
+				type: 'search',
+				column: 'name',
+			},
+		};
 	}
 
 	static load() {
@@ -26,7 +32,7 @@ class Groups extends Base {
 			groupsTemplates.push(html`
 				<tr>
 					<td class="listing__avatar"><img src="${group.avatar_url || './images/group.svg'}" alt="${group.name}" /></td>
-					<td>${group.name}</td>
+					<td data-key="name">${group.name}</td>
 					<td class="listing__actions">
 						<button @click=${()=> {this.showProjects(group.id)}}>Projects</button>
 						<button @click=${()=> {this.showMembers(group.id)}}>Members</button>
@@ -50,6 +56,7 @@ class Groups extends Base {
 		render(nodes, document.querySelector('#groups-content'));
 		this.updateCount(groups.length);
 		this.updateLastModified();
+		this.prepareFilters();
 	}
 }
 

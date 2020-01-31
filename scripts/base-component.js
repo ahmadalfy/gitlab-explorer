@@ -1,5 +1,6 @@
 import { html, render } from '../web_modules/lit-html.js';
 import DataSource from './data-handler.js';
+import Utilities from './utilities.js';
 import db from './db.js';
 
 class Base {
@@ -10,8 +11,8 @@ class Base {
 			content: document.querySelector(`#${this.component}-content`),
 			actionsList: document.querySelector(`#${this.component}-filters`),
 		}
-
 		this.dataService = new DataSource();
+		this.searchListing = Utilities.debounce(this.searchListing, 250);
 		this.checkData();
 		this.bindEvents();
 	}
@@ -50,12 +51,14 @@ class Base {
 	}
 
 	prepareFilters() {
+		this.filters = [];
 		for (const key in this.filtrationKeys) {
-			this.drawFilter(key, this.filtrationKeys[key]);
+			this.filters.push(this.createFilter(key, this.filtrationKeys[key]));
 		}
+		render(this.filters, this.panel.actionsList);
 	}
 
-	drawFilter(key, details) {
+	createFilter(key, details) {
 		let container;
 		if (details.node === 'select') {
 			const orderedFilter = Object.entries(this.filtrationKeys[key].items).sort(function (a, b) {
@@ -80,8 +83,29 @@ class Base {
 					${optionsTemplate}
 				</select>
 			`;
-			render(container, this.panel.actionsList);
+		} else if (details.type === 'search') {
+			container = html`
+				<label class="visually-hidden" for="text-search-by-${key}">Search</label>
+				<input type="search" @keyup=${(ev) => { this.searchListing(ev, details.column) }} id="text-search-by-${key}" placeholder="Search" />
+			`
 		}
+		return container;
+	}
+
+	searchListing(ev, column) {
+		const filter = ev.target.value.toUpperCase();
+		const listing = this.panel.content.querySelector('table');
+		const rows = listing.querySelectorAll('tr');
+		rows.forEach(row => {
+			const cells = row.querySelectorAll(`td[data-key="${column}"]`);
+			cells.forEach(cell => {
+				if (cell.innerText.toUpperCase().indexOf(filter) > -1) {
+					row.style.display = 'table-row';
+				} else {
+					row.style.display = 'none';
+				}
+			});
+		});
 	}
 
 	updateListing(ev, key) {

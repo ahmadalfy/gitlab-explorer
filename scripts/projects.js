@@ -9,11 +9,15 @@ class Projects extends Base {
 	constructor() {
 		super('projects');
 		this.filtrationKeys = {
+			name: {
+				type: 'search',
+				column: 'name',
+			},
 			group: {
 				node: 'select',
 				type: 'list',
 				items: {},
-			}
+			},
 		};
 	}
 
@@ -35,7 +39,7 @@ class Projects extends Base {
 			projectsTemplates.push(html`
 				<tr>
 					<td class="listing__avatar"><img src="${project.avatar_url || './images/project.svg'}" alt="${project.name}" /></td>
-					<td>${project.name}</td>
+					<td data-key="name">${project.name}</td>
 					<td data-key="group" data-value="${group?.id}">${group?.name || '-'}</td>
 					<td>${timeAgo.format(Date.parse(project.last_activity_at))}</td>
 					<td class="listing__actions">
