@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.1.0...v1.2.0) (2020-01-31)
+
+
+### Bug Fixes
+
+* Filter now is working on table data only ([888a702](https://github.com/ahmadalfy/gitlab-explorer/commit/888a702eccbd433051a5ac4f894398035178356f))
+
+
+### Features
+
+* Add filtration by activity for projects ([c45aaa2](https://github.com/ahmadalfy/gitlab-explorer/commit/c45aaa27f6fdbcf3b528bd26f07a1f0432573ada))
+
 # [1.1.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.0.0...v1.1.0) (2020-01-31)
 
 
