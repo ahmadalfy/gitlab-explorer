@@ -25,19 +25,33 @@ class Members extends Base {
 		return Utilities.req(`${routes.users}/${userId}/${routes.events}`);
 	}
 
+	/**
+	 * getEvents get the last 100 activity and store then in the database
+	 * @param {Event} ev
+	 * @param {String} memberId
+	 */
+
 	async getEvents(ev, memberId) {
 		const activityCell = ev.target.closest('tr').querySelector('.member-activity');
 		const updateCell = ev.target.closest('tr').querySelector('.last-update');
-		const events = await this.loadEvents(memberId)
+		const events = await this.loadEvents(memberId);
+		// If the user has no events, update the view and db with 'NA'
 		if (events.length === 0) {
 			db.members.update(memberId, { last_activity: 'NA', last_update: 'NA' });
 			activityCell.innerHTML = 'NA';
 			updateCell.innerHTML = 'NA';
 			return;
 		}
+		/**
+		 * Loop through the events and add a new key 'creation_day' to be used to group the events
+		 * later on to find out how many activity done per day. We set the time to zeros.
+		 */
 		events.forEach(event => {
 			event.creation_day = new Date(event.created_at).setHours(0, 0, 0, 0);
 		});
+		/**
+		 * Group events by day to facilitate drawing the charts and display the activities
+		 */
 		const groupedEvents = events.reduce((acc, obj)=> {
 			let key = obj.creation_day
 			if (!acc[key]) {
@@ -46,16 +60,39 @@ class Members extends Base {
 				acc[key].push(obj)
 			return acc
 		}, {});
+		/** Get the user's previous data from the 'member_events' table and merge both */
+		const member = await db.member_events.get({ member_id: memberId });
+		for (const eventDate in member.events) {
+			if (!groupedEvents[eventDate]) {
+				// If the event date doesn't exist in the new data, add it to the grouped events
+				groupedEvents[eventDate] = member.events[eventDate];
+			} else {
+				// If the event date exist, check if the event itself existing or not. If not, push it.
+				member.events[eventDate].forEach(memberEvent => {
+					const foundEvent = groupedEvents[eventDate].find(groupedEvent => groupedEvent.created_at === memberEvent.created_at);
+					if (!foundEvent) {
+						groupedEvents[eventDate].push(memberEvent);
+					}
+				})
+			}
+		}
 		const data = {
 			member_id: memberId,
 			events: groupedEvents,
 		}
-		const member = await db.member_events.get({ member_id: memberId });
+		/**
+		 * If the member exists in the database, update his events. If not, create a
+		 * new recorrd for him.
+		 */
 		if (member) {
-			db.member_events.update({ member_id: memberId }, data);
+			db.member_events.update(member.id, data);
 		} else {
 			db.member_events.put(data);
 		}
+		/**
+		 * Update the member activity by the last event and last retrival then update the
+		 * events table
+		 */
 		await db.members.update(memberId, {
 			last_activity: events[0].created_at,
 			last_update: Date.now(),
@@ -78,7 +115,7 @@ class Members extends Base {
 		}
 
 		const today = new Date().setHours(0, 0, 0, 0);
-		if (!memberEvents[today]) {
+		if (!memberEvents.events[today]) {
 			formattedData.unshift([today, 0]);
 		}
 
