@@ -8,6 +8,13 @@ import db from './db.js';
 class Projects extends Base {
 	constructor() {
 		super('projects');
+		this.filtrationKeys = {
+			group: {
+				node: 'select',
+				type: 'list',
+				items: {},
+			}
+		};
 	}
 
 	static load(groups) {
@@ -22,11 +29,14 @@ class Projects extends Base {
 		const projectsTemplates = [];
 		for (const project of projects) {
 			const group = this.dataService.data.groups.find(group => group.id === project.namespace.id);
+			if (group) {
+				this.filtrationKeys.group.items[group.id] = group.name;
+			}
 			projectsTemplates.push(html`
 				<tr>
 					<td class="listing__avatar"><img src="${project.avatar_url || './images/project.svg'}" alt="${project.name}" /></td>
 					<td>${project.name}</td>
-					<td>${group ? group.name : '-'}</td>
+					<td data-key="group" data-value="${group?.id}">${group?.name || '-'}</td>
 					<td>${timeAgo.format(Date.parse(project.last_activity_at))}</td>
 					<td class="listing__actions">
 						<button @click=${()=> {this.showMembers(project.id)}}>Members</button>
@@ -49,8 +59,9 @@ class Projects extends Base {
 				</tbody>
 			</table>
 		`;
-		render(nodes, document.querySelector('#projects-content'));
+		render(nodes, this.panel.content);
 		this.updateLastModified();
+		this.prepareFilters();
 	}
 
 	checkData() {

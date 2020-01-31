@@ -17,6 +17,23 @@
 
 .panel__actions {
 	margin-inline-start: auto;
+	font-size: 12px;
+	display: flex;
+}
+
+.panel__actions select {
+	height: 20px;
+	background: #fff;
+	border: 1px solid #eee;
+	border-radius: 0;
+}
+
+.panel__actions label {
+	text-transform: capitalize;
+}
+
+.panel__actions-list {
+	margin-inline-end: 10px;
 }
 
 .panel__actions button {
