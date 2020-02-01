@@ -1,4 +1,5 @@
 import { html, render } from '../web_modules/lit-html.js';
+import Highcharts from '../web_modules/highcharts.js';
 import Utilities from './utilities.js';
 import routes from './routes.js';
 import Groups from './groups.js';
@@ -47,6 +48,10 @@ class Projects extends Base {
 		return Utilities.req(`${routes.groups}/${groupId}/${routes.projects}`);
 	}
 
+	loadEvents(projectId) {
+		return Utilities.req(`${routes.projects}/${projectId}/${routes.events}`);
+	}
+
 	drawListing(projects) {
 		const projectsTemplates = [];
 		for (const project of projects) {
@@ -54,14 +59,18 @@ class Projects extends Base {
 			if (group) {
 				this.filtrationKeys.group.items[group.id] = group.name;
 			}
-			projectsTemplates.push(html`
+  			projectsTemplates.push(html`
 				<tr>
-					<td class="listing__avatar"><img src="${project.avatar_url || './images/project.svg'}" alt="${project.name}" /></td>
+					<td class="listing__avatar">
+						<a href="${project.http_url_to_repo}" target="_blank">
+							<img src="${project.avatar_url || './images/project.svg'}" alt="${project.name}" />
+						</a>
+					</td>
 					<td data-key="name">${project.name}</td>
 					<td data-key="group" data-value="${group?.id}">${group?.name || '-'}</td>
 					<td data-key="date" data-value="${Date.parse(project.last_activity_at)}">${timeAgo.format(Date.parse(project.last_activity_at))}</td>
 					<td class="listing__actions">
-						<button @click=${()=> {this.showMembers(project.id)}}>Members</button>
+						<button @click=${()=> {this.showProjectActivities(project.id, project.name)}}>Show Activity</button>
 					</td>
 				</tr>
 			`);
@@ -84,6 +93,89 @@ class Projects extends Base {
 		render(nodes, this.panel.content);
 		this.updateLastModified();
 		this.prepareFilters();
+	}
+
+	async getProjectEvents(projectId) {
+		return await db.events
+			.where('project_id')
+			.equals(projectId)
+			.with({ project: 'project_id' });
+	}
+
+	async prepareProjectData(projectId) {
+		let projectEvents = await this.getProjectEvents(projectId);
+
+		const groupedEvents = projectEvents.reduce((acc, obj)=> {
+			let key = obj.creation_day
+			if (!acc[key]) {
+				acc[key] = []
+			}
+				acc[key].push(obj)
+			return acc
+		}, {});
+
+		const formattedData = [];
+		for (let date in groupedEvents) {
+			formattedData.push([JSON.parse(date), groupedEvents[date].length]);
+		}
+
+		const today = new Date().setHours(0, 0, 0, 0);
+		if (!groupedEvents[today]) {
+			formattedData.push([today, 0]);
+		}
+
+		return { data: formattedData.reverse(), groupedEvents };
+	}
+
+	async showProjectActivities(projectId, projectName) {
+		const events = await this.loadEvents(projectId);
+		events.forEach(event => {
+			delete event.author;
+			event.creation_day = new Date(event.created_at).setHours(0, 0, 0, 0);
+		});
+		db.events.bulkPut(events);
+		const updatedEvents = await this.prepareProjectData(projectId);
+		const { data } = updatedEvents;
+		console.log(data);
+		this.drawChart(data, projectName);
+	}
+
+	drawChart(data, name) {
+		const that = this;
+		this.chart = Highcharts.chart('charts', {
+			chart: {
+				zoomType: 'x',
+			},
+			title: {
+				text: `Activity of ${name}`
+			},
+			subtitle: {
+				text: `Source: Gitlab Activities`
+			},
+			xAxis: {
+				type: 'datetime',
+			},
+			series: [{
+				name,
+				data,
+			}],
+			plotOptions: {
+				series: {
+					stacking: 'normal',
+					cursor: 'pointer',
+					point: {
+						events: {
+							click: function () {
+								that.getEventsByDate(this.category, id);
+							}
+						}
+					},
+					marker: {
+						lineWidth: 1
+					}
+				},
+			},
+		});
 	}
 
 	checkData() {
