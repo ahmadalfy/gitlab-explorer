@@ -124,7 +124,7 @@ class Projects extends Base {
 		let projectEvents = await this.getProjectEvents(projectId);
 		const updatedEvents = Charts.prepareProjectEvents(projectEvents);
 		const { data } = updatedEvents;
-		Charts.drawChart(data, projectName);
+		Charts.drawChart(data, projectName, 'areaspline');
 		Charts.prepareChartFilters();
 	}
 

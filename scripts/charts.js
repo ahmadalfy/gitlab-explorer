@@ -60,10 +60,11 @@ class Charts {
 		return { data: formattedData, groupedEvents };
 	}
 
-	static drawChart(data, name) {
+	static drawChart(data, name, area) {
 		this.chart = Highcharts.chart('charts', {
 			chart: {
 				zoomType: 'x',
+				type: area,
 			},
 			title: {
 				text: `Activity of ${name}`
@@ -78,13 +79,19 @@ class Charts {
 				name,
 				data,
 			}],
+			tooltip: {
+				split: true,
+			},
 			plotOptions: {
 				series: {
 					cursor: 'pointer',
 					marker: {
-						lineWidth: 1
+						lineWidth: 1,
 					}
 				},
+				areaspline: {
+					fillOpacity: 0.5,
+				}
 			},
 		});
 	}
