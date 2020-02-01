@@ -72,6 +72,7 @@ class Projects extends Base {
 					<td class="listing__actions">
 						<button title="Load Activities" @click=${()=> {this.loadProjectActivities(project.id)}}>Load</button>
 						<button title="Display Activities" @click=${()=> {this.showProjectActivities(project.id, project.name)}}>Display</button>
+						<button @click=${()=> {this.appendToChart(project.id)}}>+</button>
 					</td>
 				</tr>
 			`);
@@ -103,6 +104,13 @@ class Projects extends Base {
 			.with({ project: 'project_id' });
 	}
 
+	async appendToChart(projectId) {
+		let projectEvents = await this.getProjectEvents(projectId);
+		const response = Charts.prepareProjectEvents(projectEvents);
+		const { data } = response;
+		Charts.addSeries({ data });
+	}
+
 	async loadProjectActivities(projectId) {
 		const events = await this.loadEvents(projectId);
 		events.forEach(event => {
@@ -117,6 +125,7 @@ class Projects extends Base {
 		const updatedEvents = Charts.prepareProjectEvents(projectEvents);
 		const { data } = updatedEvents;
 		Charts.drawChart(data, projectName);
+		Charts.prepareChartFilters();
 	}
 
 	checkData() {

@@ -57,7 +57,7 @@ class Charts {
 		if (!groupedEvents[today]) {
 			formattedData.push([today, 0]);
 		}
-		return { data: formattedData.reverse(), groupedEvents };
+		return { data: formattedData, groupedEvents };
 	}
 
 	static drawChart(data, name) {
@@ -141,13 +141,12 @@ class Charts {
 		for (const date of dates) {
 			actionList.push(html`
 				<button @click=${() => {
-					console.log(this);
 					this.chart.xAxis[0].setExtremes((today - date.value), today);
 					this.chart.showResetZoom();
 				}}>${date.label}</button>
 			`);
 		}
-		actionList.push(html`
+		showDetailsCallback && actionList.push(html`
 			<button @click=${() => { showDetailsCallback(memberId, memberName) }}>Details</button>
 		`);
 		const buttons = html`${actionList}`;
