@@ -112,7 +112,7 @@ class Members extends Base {
 			.with({ member: 'member_id' });
 	}
 
-	async prepaeUserData(memberId) {
+	async prepareUserData(memberId) {
 		let memberEvents = await this.getUserEvents(memberId);
 		memberEvents = memberEvents[0];
 
@@ -235,14 +235,14 @@ class Members extends Base {
 	}
 
 	async displayEvents(memberId) {
-		const response = await this.prepaeUserData(memberId);
+		const response = await this.prepareUserData(memberId);
 		const { data, memberEvents: { member : { name }} } = response;
 		this.drawChart(data, name, memberId);
 		this.prepareChartFilters(memberId, name);
 	}
 
 	async appendToChart(memberId) {
-		const response = await this.prepaeUserData(memberId);
+		const response = await this.prepareUserData(memberId);
 		const { data, memberEvents: { member : { name }} } = response;
 		this.chart.addSeries({
 			name,
