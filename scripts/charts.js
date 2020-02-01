@@ -27,7 +27,7 @@ class Charts {
 				} else {
 					const datedStack = stack.data.find(item => event.creation_day === item[0]);
 					if (!datedStack) {
-						stack.data.push([ event.creation_day, 1 ]);
+						stack.data.unshift([ event.creation_day, 1 ]);
 					} else {
 						datedStack[1] += 1;
 					}
