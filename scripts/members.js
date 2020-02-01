@@ -4,6 +4,7 @@ import Utilities from './utilities.js';
 import routes from './routes.js';
 import Groups from './groups.js';
 import Base from './base-component.js';
+import Charts from './charts.js';
 import db from './db.js';
 
 class Members extends Base {
@@ -106,32 +107,15 @@ class Members extends Base {
 	}
 
 	async getUserEvents(memberId) {
-		return await db.member_events
+		const events = await db.member_events
 			.where('member_id')
 			.equals(memberId)
 			.with({ member: 'member_id' });
+		return events[0];
 	}
 
-	async prepareUserData(memberId) {
+	async prepareUserDetailedData(memberId) {
 		let memberEvents = await this.getUserEvents(memberId);
-		memberEvents = memberEvents[0];
-
-		const formattedData = [];
-		for (let date in memberEvents.events) {
-			formattedData.push([JSON.parse(date), memberEvents.events[date].length]);
-		}
-
-		const today = new Date().setHours(0, 0, 0, 0);
-		if (!memberEvents.events[today]) {
-			formattedData.unshift([today, 0]);
-		}
-
-		return { data: formattedData.reverse(), memberEvents };
-	}
-
-	async prepaeUserDetailedData(memberId) {
-		let memberEvents = await this.getUserEvents(memberId);
-		memberEvents = memberEvents[0];
 
 		const formattedData = [];
 
@@ -235,14 +219,18 @@ class Members extends Base {
 	}
 
 	async displayEvents(memberId) {
-		const response = await this.prepareUserData(memberId);
+		let memberEvents = await this.getUserEvents(memberId);
+		const response = await Charts.prepareMemberEvents(memberEvents);
+
 		const { data, memberEvents: { member : { name }} } = response;
 		this.drawChart(data, name, memberId);
 		this.prepareChartFilters(memberId, name);
 	}
 
 	async appendToChart(memberId) {
-		const response = await this.prepareUserData(memberId);
+		let memberEvents = await this.getUserEvents(memberId);
+		const response = await Charts.prepareMemberEvents(memberEvents);
+
 		const { data, memberEvents: { member : { name }} } = response;
 		this.chart.addSeries({
 			name,
@@ -251,7 +239,7 @@ class Members extends Base {
 	}
 
 	async showActivityDetals(memberId, name) {
-		const response = await this.prepaeUserDetailedData(memberId);
+		const response = await this.prepareUserDetailedData(memberId);
 		const { data } = response;
 		this.chart = Highcharts.chart('charts', {
 			type: 'column',
