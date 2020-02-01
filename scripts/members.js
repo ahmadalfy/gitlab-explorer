@@ -255,6 +255,9 @@ class Members extends Base {
 		const { data } = response;
 		this.chart = Highcharts.chart('charts', {
 			type: 'column',
+			chart: {
+				zoomType: 'x',
+			},
 			series: data,
 			name: 'Details',
 			xAxis: {
