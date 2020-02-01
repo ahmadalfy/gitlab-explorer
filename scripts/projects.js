@@ -1,8 +1,8 @@
 import { html, render } from '../web_modules/lit-html.js';
-import Highcharts from '../web_modules/highcharts.js';
 import Utilities from './utilities.js';
 import routes from './routes.js';
 import Groups from './groups.js';
+import Charts from './charts.js';
 import Base from './base-component.js';
 import db from './db.js';
 
@@ -102,31 +102,6 @@ class Projects extends Base {
 			.with({ project: 'project_id' });
 	}
 
-	async prepareProjectData(projectId) {
-		let projectEvents = await this.getProjectEvents(projectId);
-
-		const groupedEvents = projectEvents.reduce((acc, obj)=> {
-			let key = obj.creation_day
-			if (!acc[key]) {
-				acc[key] = []
-			}
-				acc[key].push(obj)
-			return acc
-		}, {});
-
-		const formattedData = [];
-		for (let date in groupedEvents) {
-			formattedData.push([JSON.parse(date), groupedEvents[date].length]);
-		}
-
-		const today = new Date().setHours(0, 0, 0, 0);
-		if (!groupedEvents[today]) {
-			formattedData.push([today, 0]);
-		}
-
-		return { data: formattedData.reverse(), groupedEvents };
-	}
-
 	async showProjectActivities(projectId, projectName) {
 		const events = await this.loadEvents(projectId);
 		events.forEach(event => {
@@ -134,48 +109,10 @@ class Projects extends Base {
 			event.creation_day = new Date(event.created_at).setHours(0, 0, 0, 0);
 		});
 		db.events.bulkPut(events);
-		const updatedEvents = await this.prepareProjectData(projectId);
+		let projectEvents = await this.getProjectEvents(projectId);
+		const updatedEvents = Charts.prepareProjectEvents(projectEvents);
 		const { data } = updatedEvents;
-		console.log(data);
-		this.drawChart(data, projectName);
-	}
-
-	drawChart(data, name) {
-		const that = this;
-		this.chart = Highcharts.chart('charts', {
-			chart: {
-				zoomType: 'x',
-			},
-			title: {
-				text: `Activity of ${name}`
-			},
-			subtitle: {
-				text: `Source: Gitlab Activities`
-			},
-			xAxis: {
-				type: 'datetime',
-			},
-			series: [{
-				name,
-				data,
-			}],
-			plotOptions: {
-				series: {
-					stacking: 'normal',
-					cursor: 'pointer',
-					point: {
-						events: {
-							click: function () {
-								that.getEventsByDate(this.category, id);
-							}
-						}
-					},
-					marker: {
-						lineWidth: 1
-					}
-				},
-			},
-		});
+		Charts.drawChart(data, projectName);
 	}
 
 	checkData() {

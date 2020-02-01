@@ -40,6 +40,26 @@ class Charts {
 		return { data: formattedData, memberEvents };
 	}
 
+	static prepareProjectEvents(projectEvents) {
+		const groupedEvents = projectEvents.reduce((acc, obj)=> {
+			let key = obj.creation_day
+			if (!acc[key]) {
+				acc[key] = []
+			}
+				acc[key].push(obj)
+			return acc
+		}, {});
+		const formattedData = [];
+		for (let date in groupedEvents) {
+			formattedData.push([JSON.parse(date), groupedEvents[date].length]);
+		}
+		const today = new Date().setHours(0, 0, 0, 0);
+		if (!groupedEvents[today]) {
+			formattedData.push([today, 0]);
+		}
+		return { data: formattedData.reverse(), groupedEvents };
+	}
+
 	static drawChart(data, name) {
 		this.chart = Highcharts.chart('charts', {
 			chart: {
