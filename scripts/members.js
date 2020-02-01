@@ -1,5 +1,4 @@
 import { html, render } from '../web_modules/lit-html.js';
-import Highcharts from '../web_modules/highcharts.js';
 import Utilities from './utilities.js';
 import routes from './routes.js';
 import Groups from './groups.js';
@@ -27,7 +26,7 @@ class Members extends Base {
 	}
 
 	/**
-	 * getEvents get the last 100 activity and store then in the database
+	 * getEvents get the last 100 activity and store them in the database
 	 * @param {Event} ev
 	 * @param {String} memberId
 	 */
@@ -114,88 +113,13 @@ class Members extends Base {
 		return events[0];
 	}
 
-	drawChart(data, name, id) {
-		const that = this;
-		this.chart = Highcharts.chart('charts', {
-			chart: {
-				zoomType: 'x',
-			},
-			title: {
-				text: `Activity of ${name}`
-			},
-			subtitle: {
-				text: `Source: Gitlab Activities`
-			},
-			xAxis: {
-				type: 'datetime',
-			},
-			series: [{
-				name,
-				data,
-			}],
-			plotOptions: {
-				series: {
-					stacking: 'normal',
-					cursor: 'pointer',
-					point: {
-						events: {
-							click: function () {
-								that.getEventsByDate(this.category, id);
-							}
-						}
-					},
-					marker: {
-						lineWidth: 1
-					}
-				},
-			},
-		});
-	}
-
-	async getEventsByDate(day, id) {
-		const member = await db.member_events.get({ member_id: id });
-		console.log(member.events[day]);
-	}
-
-	prepareChartFilters(memberId, memberName) {
-		const dates = [
-			{
-				label: 'Last week',
-				value: 1000 * 60 * 60 * 24 * 7
-			},
-			{
-				label: '2 weeks ago',
-				value: 1000 * 60 * 60 * 24 * 14
-			},
-			{
-				label: 'Last month',
-				value: 1000 * 60 * 60 * 24 * 30
-			},
-		];
-		const today = +(new Date());
-		const actionList = [];
-		for (const date of dates) {
-			actionList.push(html`
-				<button @click=${() => {
-					this.chart.xAxis[0].setExtremes((today - date.value), today);
-					this.chart.showResetZoom();
-				}}>${date.label}</button>
-			`);
-		}
-		actionList.push(html`
-			<button @click=${() => { this.showActivityDetals(memberId, memberName) }}>Details</button>
-		`);
-		const buttons = html`${actionList}`;
-		render(buttons, document.querySelector('#zoom-options'));
-	}
-
 	async displayEvents(memberId) {
 		let memberEvents = await this.getUserEvents(memberId);
 		const response = Charts.prepareMemberEvents(memberEvents);
 
 		const { data, memberEvents: { member : { name }} } = response;
-		this.drawChart(data, name, memberId);
-		this.prepareChartFilters(memberId, name);
+		Charts.drawChart(data, name);
+		Charts.prepareChartFilters(memberId, name, this.showActivityDetals.bind(this));
 	}
 
 	async appendToChart(memberId) {
@@ -203,41 +127,14 @@ class Members extends Base {
 		const response = Charts.prepareMemberEvents(memberEvents);
 
 		const { data, memberEvents: { member : { name }} } = response;
-		this.chart.addSeries({
-			name,
-			data,
-		});
+		Charts.addSeries({ name, data });
 	}
 
 	async showActivityDetals(memberId, name) {
 		let memberEvents = await this.getUserEvents(memberId);
 		const response = Charts.prepareUserDetailedData(memberEvents);
 		const { data } = response;
-		this.chart = Highcharts.chart('charts', {
-			type: 'column',
-			chart: {
-				zoomType: 'x',
-			},
-			series: data,
-			name: 'Details',
-			xAxis: {
-				type: 'datetime',
-			},
-			title: {
-				text: `Activity of ${name}`
-			},
-			subtitle: {
-				text: `Source: Gitlab Activities`
-			},
-			plotOptions: {
-				column: {
-					stacking: 'normal',
-					dataLabels: {
-						enabled: true
-					}
-				}
-			}
-		});
+		Charts.drawDetailedChart(data, name);
 		this.appendToChart(memberId);
 	}
 
