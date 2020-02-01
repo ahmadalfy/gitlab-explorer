@@ -70,7 +70,8 @@ class Projects extends Base {
 					<td data-key="group" data-value="${group?.id}">${group?.name || '-'}</td>
 					<td data-key="date" data-value="${Date.parse(project.last_activity_at)}">${timeAgo.format(Date.parse(project.last_activity_at))}</td>
 					<td class="listing__actions">
-						<button @click=${()=> {this.showProjectActivities(project.id, project.name)}}>Show Activity</button>
+						<button title="Load Activities" @click=${()=> {this.loadProjectActivities(project.id)}}>Load</button>
+						<button title="Display Activities" @click=${()=> {this.showProjectActivities(project.id, project.name)}}>Display</button>
 					</td>
 				</tr>
 			`);
@@ -102,13 +103,16 @@ class Projects extends Base {
 			.with({ project: 'project_id' });
 	}
 
-	async showProjectActivities(projectId, projectName) {
+	async loadProjectActivities(projectId) {
 		const events = await this.loadEvents(projectId);
 		events.forEach(event => {
 			delete event.author;
 			event.creation_day = new Date(event.created_at).setHours(0, 0, 0, 0);
 		});
 		db.events.bulkPut(events);
+	}
+
+	async showProjectActivities(projectId, projectName) {
 		let projectEvents = await this.getProjectEvents(projectId);
 		const updatedEvents = Charts.prepareProjectEvents(projectEvents);
 		const { data } = updatedEvents;
