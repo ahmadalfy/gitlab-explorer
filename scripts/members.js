@@ -30,7 +30,6 @@ class Members extends Base {
 	 * @param {Event} ev
 	 * @param {String} memberId
 	 */
-
 	async getEvents(ev, memberId) {
 		const activityCell = ev.target.closest('tr').querySelector('.member-activity');
 		const updateCell = ev.target.closest('tr').querySelector('.last-update');
@@ -106,11 +105,15 @@ class Members extends Base {
 		db.events.bulkPut(events);
 	}
 
-	async prepaeUserData(memberId) {
-		let memberEvents = await db.member_events
+	async getUserEvents(memberId) {
+		return await db.member_events
 			.where('member_id')
 			.equals(memberId)
 			.with({ member: 'member_id' });
+	}
+
+	async prepaeUserData(memberId) {
+		let memberEvents = await this.getUserEvents(memberId);
 		memberEvents = memberEvents[0];
 
 		const formattedData = [];
@@ -124,6 +127,36 @@ class Members extends Base {
 		}
 
 		return { data: formattedData.reverse(), memberEvents };
+	}
+
+	async prepaeUserDetailedData(memberId) {
+		let memberEvents = await this.getUserEvents(memberId);
+		memberEvents = memberEvents[0];
+
+		const formattedData = [];
+
+		for (let date in memberEvents.events) {
+			memberEvents.events[date].forEach(event => {
+				const stack = formattedData.find(data => data.name === event.action_name);
+				if (!stack) {
+					formattedData.push({
+						name: event.action_name,
+						data: [[ event.creation_day, 1 ]],
+						stack: 0,
+						type: 'column',
+					});
+				} else {
+					const datedStack = stack.data.find(item => event.creation_day === item[0]);
+					if (!datedStack) {
+						stack.data.push([ event.creation_day, 1 ]);
+					} else {
+						datedStack[1] += 1;
+					}
+				}
+			});
+		}
+
+		return { data: formattedData, memberEvents };
 	}
 
 	drawChart(data, name, id) {
@@ -147,6 +180,7 @@ class Members extends Base {
 			}],
 			plotOptions: {
 				series: {
+					stacking: 'normal',
 					cursor: 'pointer',
 					point: {
 						events: {
@@ -158,7 +192,7 @@ class Members extends Base {
 					marker: {
 						lineWidth: 1
 					}
-				}
+				},
 			},
 		});
 	}
@@ -168,7 +202,7 @@ class Members extends Base {
 		console.log(member.events[day]);
 	}
 
-	prepareChartFilters() {
+	prepareChartFilters(memberId, memberName) {
 		const dates = [
 			{
 				label: 'Last week',
@@ -184,16 +218,19 @@ class Members extends Base {
 			},
 		];
 		const today = +(new Date());
-		const zoomOptions = [];
+		const actionList = [];
 		for (const date of dates) {
-			zoomOptions.push(html`
+			actionList.push(html`
 				<button @click=${() => {
 					this.chart.xAxis[0].setExtremes((today - date.value), today);
 					this.chart.showResetZoom();
 				}}>${date.label}</button>
 			`);
 		}
-		const buttons = html`${zoomOptions}`;
+		actionList.push(html`
+			<button @click=${() => { this.showActivityDetals(memberId, memberName) }}>Details</button>
+		`);
+		const buttons = html`${actionList}`;
 		render(buttons, document.querySelector('#zoom-options'));
 	}
 
@@ -201,7 +238,7 @@ class Members extends Base {
 		const response = await this.prepaeUserData(memberId);
 		const { data, memberEvents: { member : { name }} } = response;
 		this.drawChart(data, name, memberId);
-		this.prepareChartFilters();
+		this.prepareChartFilters(memberId, name);
 	}
 
 	async appendToChart(memberId) {
@@ -211,6 +248,34 @@ class Members extends Base {
 			name,
 			data,
 		});
+	}
+
+	async showActivityDetals(memberId, name) {
+		const response = await this.prepaeUserDetailedData(memberId);
+		const { data } = response;
+		this.chart = Highcharts.chart('charts', {
+			type: 'column',
+			series: data,
+			name: 'Details',
+			xAxis: {
+				type: 'datetime',
+			},
+			title: {
+				text: `Activity of ${name}`
+			},
+			subtitle: {
+				text: `Source: Gitlab Activities`
+			},
+			plotOptions: {
+				column: {
+					stacking: 'normal',
+					dataLabels: {
+						enabled: true
+					}
+				}
+			}
+		});
+		this.appendToChart(memberId);
 	}
 
 	drawListing(members) {
