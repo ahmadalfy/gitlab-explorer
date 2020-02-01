@@ -19,7 +19,7 @@ Since everything is stored in your browser, you might want to export the data so
 
 1. Clone the repository.
 2. Create an access token from your [gitlab settings](https://gitlab.com/profile/personal_access_tokens). You need to grant it access to `api`, `read_user`, `read_repository` and `read_registry`.
-3. Copy the `env.sample.js` file to `env.js` and replace the empty string with your token.
+3. Copy the `env.sample.js` file to `env.js` and replace the default empty string for token option with your token (for self-hosted servers change the baseUrl option to match your domain).
 4. Use an http server to run the application. There's no build steps required and you don't even need to install the required modules.
 
 ## Future plans
