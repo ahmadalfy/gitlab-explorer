@@ -35,3 +35,37 @@
 	font-size: 12px;
 	border: 1px solid #eee;
 }
+
+.listing__actions .button-group {
+	display: inline-block;
+	position: relative;
+}
+
+.listing__actions .button-group > button::after {
+	content: "\2193";
+	margin-inline-start: 5px;
+	font-size: 8px;
+}
+
+.listing__actions .button-group.is-opened > button::after {
+	content: "\2191";
+}
+
+.listing__actions .button-group .buttons {
+	position: absolute;
+	top: 100%;
+	z-index: 1;
+	left: 0;
+	display: none;
+	padding: 5px;
+	box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+	background: #fff;
+}
+
+.listing__actions .button-group .buttons button + button {
+	margin-top: 5px;
+}
+
+.listing__actions .button-group.is-opened .buttons {
+	display: block;
+}

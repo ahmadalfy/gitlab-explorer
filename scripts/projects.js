@@ -52,6 +52,10 @@ class Projects extends Base {
 		return Utilities.req(`${routes.projects}/${projectId}/${routes.events}`);
 	}
 
+	loadCommits(projectId) {
+		return Utilities.req(`${routes.projects}/${projectId}/${routes.repository}/${routes.commits}`);
+	}
+
 	drawListing(projects) {
 		const projectsTemplates = [];
 		for (const project of projects) {
@@ -70,7 +74,13 @@ class Projects extends Base {
 					<td data-key="group" data-value="${group?.id}">${group?.name || '-'}</td>
 					<td data-key="date" data-value="${Date.parse(project.last_activity_at)}">${timeAgo.format(Date.parse(project.last_activity_at))}</td>
 					<td class="listing__actions">
-						<button title="Load Activities" @click=${()=> {this.loadProjectActivities(project.id)}}>Load</button>
+						<span class="button-group">
+							<button @click=${(ev) => {this.displayButtons(ev)}}>Load</button>
+							<span class="buttons">
+								<button title="Load Activities" @click=${()=> {this.loadProjectActivities(project.id)}}>Activities</button>
+								<button title="Load Commits" @click=${() => {this.loadProjectCommits(project.id)}}>Commits</button>
+							</span>
+						</span>
 						<button title="Display Activities" @click=${()=> {this.showProjectActivities(project.id, project.name)}}>Display</button>
 						<button @click=${()=> {this.appendToChart(project.id, project.name)}}>+</button>
 					</td>
@@ -97,6 +107,19 @@ class Projects extends Base {
 		this.prepareFilters();
 	}
 
+	displayButtons(ev) {
+		const alreadyOpened = document.querySelector('.button-group.is-opened');
+		if (alreadyOpened) {
+			return;
+		}
+		ev.stopPropagation();
+		const buttonGroup = ev.target.closest('.button-group');
+		buttonGroup.classList.add('is-opened');
+		document.addEventListener('click', () => {
+			document.querySelector('.button-group.is-opened').classList.remove('is-opened')
+		}, { once: true });
+	}
+
 	async getProjectEvents(projectId) {
 		return await db.events
 			.where('project_id')
@@ -118,6 +141,10 @@ class Projects extends Base {
 			event.creation_day = new Date(event.created_at).setHours(0, 0, 0, 0);
 		});
 		db.events.bulkPut(events);
+	}
+
+	async loadProjectCommits(projectId) {
+		const commits = await this.loadCommits(projectId);
 	}
 
 	async showProjectActivities(projectId, projectName) {
