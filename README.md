@@ -17,12 +17,11 @@ Since everything is stored in your browser, you might want to export the data so
 
 ## Getting started
 
-### Note: make sure to use the latest version of Chrome and enable the experamintal javascript flag from `chrome://flags`, this is important since some of the javascript used here are still not official yet.
+**Note: make sure to use the latest version of Chrome and enable the experamintal javascript flag from `chrome://flags`, this is important since some of the javascript used here are still not official yet**
 
-1. Install the dependencies using `npm install`
-2. Create a `env.js` file and copy the contents of `env.sample.js` to it, replace the `token` and/or the `baseUrl` with your own gitlab instance configurations.
-   - you can create a personal access token from your gitlab settings and make sure to allow `api`, `read_user`, `read_repository` and `read_registry` access for that token.
-3. Start a server from the project directory, the project should now be running in your browser, this project uses [snowpack](https://www.snowpack.dev/) so no building/bundling is required.
+1. Create a `env.js` file and copy the contents of `env.sample.js` to it, replace the `token` and/or the `baseUrl` with your own gitlab instance configurations.
+   * you can create a personal access token from your gitlab settings and make sure to allow `api`, `read_user`, `read_repository` and `read_registry` access for that token.
+2. Start a server from the project directory, the project should now be running in your browser, this project uses [snowpack](https://www.snowpack.dev/) so no building/bundling is required.
 
 ## Future plans
 
