@@ -95,7 +95,11 @@ class Base {
 		} else if (details.type === 'search') {
 			container = html`
 				<label class="visually-hidden" for="text-search-by-${key}">Search</label>
-				<input type="search" @keyup=${(ev) => { this.searchListing(ev, details.column) }} id="text-search-by-${key}" placeholder="Search" />
+				<input type="search"
+					@keyup=${(ev) => { this.searchListing(ev, details.column) }}
+					/* Search event is used to detect clearing of the search input */
+					@search=${(ev) => { this.searchListing(ev, details.column) }}
+					id="text-search-by-${key}" placeholder="Search" />
 			`
 		}
 		return container;
