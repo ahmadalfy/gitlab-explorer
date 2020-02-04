@@ -52,8 +52,14 @@ class Projects extends Base {
 		return Utilities.req(`${routes.projects}/${projectId}/${routes.events}`);
 	}
 
-	loadCommits(projectId) {
-		return Utilities.req(`${routes.projects}/${projectId}/${routes.repository}/${routes.commits}`);
+	loadCommits(projectId, afterDate) {
+		const data = {
+			with_stats: true,
+			per_page: 500,
+			...(afterDate ? { since: afterDate } : {})
+		}
+		const searchParams = new URLSearchParams(data).toString();
+		return Utilities.req(`${routes.projects}/${projectId}/${routes.repository}/${routes.commits}`, searchParams);
 	}
 
 	drawListing(projects) {
@@ -143,8 +149,42 @@ class Projects extends Base {
 		db.events.bulkPut(events);
 	}
 
+	/**
+	 * loadProjectCommits get the project commits since the last commit stored in the db.
+	 * We the last commit for the project from the database using the last `authored_date`
+	 * then request the commits from the API. The result is cleaned from the un-needed keys
+	 * to keep the db as small as we can.
+	 * @param {Number} projectId
+	 */
 	async loadProjectCommits(projectId) {
-		const commits = await this.loadCommits(projectId);
+		let commits;
+		let afterDate;
+		await db.commits
+			.where('project_id')
+			.equals(projectId)
+			.reverse()
+			.sortBy('authored_date')
+			.then(commits => {
+				if (commits.length > 0) {
+					afterDate = commits[0].authored_date;
+				}
+			}
+		);
+		commits = await this.loadCommits(projectId, afterDate);
+		commits.forEach(commit => {
+			[
+				'created_at',
+				'author_email',
+				'committed_date',
+				'committer_email',
+				'committed_date',
+				'committer_name',
+				'created_at',
+				'id',
+			].forEach(key => { delete commit[key] });
+			commit.project_id = projectId;
+		});
+		db.commits.bulkPut(commits);
 	}
 
 	async showProjectActivities(projectId, projectName) {
