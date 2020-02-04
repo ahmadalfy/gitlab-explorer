@@ -1,8 +1,8 @@
 import env from '../env.js';
 
 class Utilities {
-	static async req(api, qs, method = 'GET', headers = {}) {
-		const response = await fetch(`${env.baseUrl}/api/v4/${api}?per_page=500`, {
+	static async req(api, qs = 'per_page=500', method = 'GET', headers = {}) {
+		const response = await fetch(`${env.baseUrl}/api/v4/${api}?${qs}`, {
 			method,
 			headers: {
 				...headers,
