@@ -1,9 +1,9 @@
 import { html, render } from '../web_modules/lit-html.js';
-import Highcharts from '../web_modules/highcharts.js';
 import Utilities from './utilities.js';
 import routes from './routes.js';
 import Groups from './groups.js';
 import Base from './base-component.js';
+import Charts from './charts.js';
 import db from './db.js';
 
 class Members extends Base {
@@ -26,11 +26,10 @@ class Members extends Base {
 	}
 
 	/**
-	 * getEvents get the last 100 activity and store then in the database
+	 * getEvents get the last 100 activity and store them in the database
 	 * @param {Event} ev
 	 * @param {String} memberId
 	 */
-
 	async getEvents(ev, memberId) {
 		const activityCell = ev.target.closest('tr').querySelector('.member-activity');
 		const updateCell = ev.target.closest('tr').querySelector('.last-update');
@@ -44,9 +43,11 @@ class Members extends Base {
 		}
 		/**
 		 * Loop through the events and add a new key 'creation_day' to be used to group the events
-		 * later on to find out how many activity done per day. We set the time to zeros.
+		 * later on to find out how many activity done per day. We set the time to zeros and remove
+		 * the author object because it's not necessary.
 		 */
 		events.forEach(event => {
+			delete event.author;
 			event.creation_day = new Date(event.created_at).setHours(0, 0, 0, 0);
 		});
 		/**
@@ -62,18 +63,20 @@ class Members extends Base {
 		}, {});
 		/** Get the user's previous data from the 'member_events' table and merge both */
 		const member = await db.member_events.get({ member_id: memberId });
-		for (const eventDate in member.events) {
-			if (!groupedEvents[eventDate]) {
-				// If the event date doesn't exist in the new data, add it to the grouped events
-				groupedEvents[eventDate] = member.events[eventDate];
-			} else {
-				// If the event date exist, check if the event itself existing or not. If not, push it.
-				member.events[eventDate].forEach(memberEvent => {
-					const foundEvent = groupedEvents[eventDate].find(groupedEvent => groupedEvent.created_at === memberEvent.created_at);
-					if (!foundEvent) {
-						groupedEvents[eventDate].push(memberEvent);
-					}
-				})
+		if (member) {
+			for (const eventDate in member.events) {
+				if (!groupedEvents[eventDate]) {
+					// If the event date doesn't exist in the new data, add it to the grouped events
+					groupedEvents[eventDate] = member.events[eventDate];
+				} else {
+					// If the event date exist, check if the event itself existing or not. If not, push it.
+					member.events[eventDate].forEach(memberEvent => {
+						const foundEvent = groupedEvents[eventDate].find(groupedEvent => groupedEvent.created_at === memberEvent.created_at);
+						if (!foundEvent) {
+							groupedEvents[eventDate].push(memberEvent);
+						}
+					})
+				}
 			}
 		}
 		const data = {
@@ -102,105 +105,37 @@ class Members extends Base {
 		db.events.bulkPut(events);
 	}
 
-	async prepaeUserData(memberId) {
-		let memberEvents = await db.member_events
+	async getUserEvents(memberId) {
+		const events = await db.member_events
 			.where('member_id')
 			.equals(memberId)
 			.with({ member: 'member_id' });
-		memberEvents = memberEvents[0];
-
-		const formattedData = [];
-		for (let date in memberEvents.events) {
-			formattedData.push([JSON.parse(date), memberEvents.events[date].length]);
-		}
-
-		const today = new Date().setHours(0, 0, 0, 0);
-		if (!memberEvents.events[today]) {
-			formattedData.unshift([today, 0]);
-		}
-
-		return { data: formattedData.reverse(), memberEvents };
-	}
-
-	drawChart(data, name) {
-		this.chart = Highcharts.chart('charts', {
-			chart: {
-				zoomType: 'x',
-			},
-			title: {
-				text: `Activity of ${name}`
-			},
-			subtitle: {
-				text: `Source: Gitlab Activities`
-			},
-			xAxis: {
-				type: 'datetime',
-			},
-			series: [{
-				name,
-				data,
-			}],
-			plotOptions: {
-				series: {
-					cursor: 'pointer',
-					point: {
-						events: {
-							click: function () {
-								console.log(this.category);
-							}
-						}
-					},
-					marker: {
-						lineWidth: 1
-					}
-				}
-			},
-		});
-	}
-
-	prepareChartFilters() {
-		const dates = [
-			{
-				label: 'Last week',
-				value: 1000 * 60 * 60 * 24 * 7
-			},
-			{
-				label: '2 weeks ago',
-				value: 1000 * 60 * 60 * 24 * 14
-			},
-			{
-				label: 'Last month',
-				value: 1000 * 60 * 60 * 24 * 30
-			},
-		];
-		const today = +(new Date());
-		const zoomOptions = [];
-		for (const date of dates) {
-			zoomOptions.push(html`
-				<button @click=${() => {
-					this.chart.xAxis[0].setExtremes((today - date.value), today);
-					this.chart.showResetZoom();
-				}}>${date.label}</button>
-			`);
-		}
-		const buttons = html`${zoomOptions}`;
-		render(buttons, document.querySelector('#zoom-options'));
+		return events[0];
 	}
 
 	async displayEvents(memberId) {
-		const response = await this.prepaeUserData(memberId);
+		let memberEvents = await this.getUserEvents(memberId);
+		const response = Charts.prepareMemberEvents(memberEvents);
+
 		const { data, memberEvents: { member : { name }} } = response;
-		this.drawChart(data, name);
-		this.prepareChartFilters();
+		Charts.drawChart(data, name);
+		Charts.prepareChartFilters(memberId, name, this.showActivityDetals.bind(this));
 	}
 
 	async appendToChart(memberId) {
-		const response = await this.prepaeUserData(memberId);
+		let memberEvents = await this.getUserEvents(memberId);
+		const response = Charts.prepareMemberEvents(memberEvents);
+
 		const { data, memberEvents: { member : { name }} } = response;
-		this.chart.addSeries({
-			name,
-			data,
-		});
+		Charts.addSeries({ name, data });
+	}
+
+	async showActivityDetals(memberId, name) {
+		let memberEvents = await this.getUserEvents(memberId);
+		const response = Charts.prepareUserDetailedData(memberEvents);
+		const { data } = response;
+		Charts.drawDetailedChart(data, name);
+		this.appendToChart(memberId);
 	}
 
 	drawListing(members) {
