@@ -22,11 +22,10 @@ Since everything is stored in your browser, you might want to export the data so
 3. Copy the `env.sample.js` file to `env.js` and replace the default empty string for token option with your token (for self-hosted servers change the baseUrl option to match your domain).
 4. Use an http server to run the application. There's no build steps required and you don't even need to install the required modules.
 
-## Future plans
+## Status of this project
 
-This is still work in progress. I am trying to use it to gain full visibility on the operations and my team activities where I work. There's a lot of improvements and stuff on my mind now. I still need to:
+This is still work in progress. As a start I am focusing on using the APIs to build useful reports. After extracting enough useful information from the data I plan to rebuild the dashboard and display these information in a better way.
 
-* Filtration and search for all listings.
-* Details of the activities.
-* Filter activities on graphs by types.
-* A LOT of visual improvements.
+## ⚠️ WARNING ⚠️
+
+This tool require a Gitlab access token to work. That token should be kept safe and hidden. If you deploy it there is a possibility that someone find it and use it to do harm to your work. **Use it at your own risk**.
