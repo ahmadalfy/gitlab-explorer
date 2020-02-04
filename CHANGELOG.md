@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.2.0...v1.3.0) (2020-02-04)
+
+
+### Features
+
+* multiple data related stuff ([#23](https://github.com/ahmadalfy/gitlab-explorer/issues/23)) ([66ebe2d](https://github.com/ahmadalfy/gitlab-explorer/commit/66ebe2d3e8ef0672f34ac8d5f68b086fcceb2404))
+
 # [1.2.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.1.0...v1.2.0) (2020-01-31)
 
 
