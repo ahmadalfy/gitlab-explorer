@@ -1,3 +1,30 @@
+# [1.4.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.3.0...v1.4.0) (2020-02-04)
+
+
+### Bug Fixes
+
+* **projects:** Display project name on chart ([1e8fc22](https://github.com/ahmadalfy/gitlab-explorer/commit/1e8fc22531e8ed7e54a062d20cc3c68857345a45))
+* Add zoom to detailed chart ([f1e4ffd](https://github.com/ahmadalfy/gitlab-explorer/commit/f1e4ffda97a95f43aa340e5548650967d596b96a))
+* Loading new members activities not working ([6015618](https://github.com/ahmadalfy/gitlab-explorer/commit/60156186fc7a0d3a8559f371c8af812fbecb5d92))
+* Sort data supplied to chart ascendingly ([16650f0](https://github.com/ahmadalfy/gitlab-explorer/commit/16650f0c0b3a150a20d457af501b8facb93eba1e))
+
+
+### Features
+
+* **project:** Group actionlist buttons together ([a9b5893](https://github.com/ahmadalfy/gitlab-explorer/commit/a9b58939f7df080085b6b2313ce457ffacdf934a))
+* change project chart type ([1759abb](https://github.com/ahmadalfy/gitlab-explorer/commit/1759abbc09b60d277e4100c42f722a1881f79f7b))
+* **projects:** Add append to chart ([d97eabc](https://github.com/ahmadalfy/gitlab-explorer/commit/d97eabc30df180aa6ed85a2c4fc9fee7e6a66eb8))
+* **projects:** Draw project activity chart ([82b6a91](https://github.com/ahmadalfy/gitlab-explorer/commit/82b6a9184983932c4d0874739f4c200d628a998a))
+* **projects:** Separate load from show activities ([fa2bea3](https://github.com/ahmadalfy/gitlab-explorer/commit/fa2bea37f0d631198e39f7494ec86579ef1778bb))
+* Add chart zooming options for recent activities ([95e6e02](https://github.com/ahmadalfy/gitlab-explorer/commit/95e6e02ff1b4e4f554fae46ce5745e1d3a717cae))
+* Add search event to detect field clearance ([1f22a56](https://github.com/ahmadalfy/gitlab-explorer/commit/1f22a56356ea5bcb0e995b5660a4d754e0cd909a))
+* Display detailed activity for the user ([f0e80bb](https://github.com/ahmadalfy/gitlab-explorer/commit/f0e80bbcbd21789c4f3e57220c1bd1e5e3bedd9b))
+
+
+### Performance Improvements
+
+* **db:** Remove unneeded member object from member_events ([5e66e2a](https://github.com/ahmadalfy/gitlab-explorer/commit/5e66e2aba441924fb4b48eabc8b50f990a0739b2))
+
 # [1.3.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.2.0...v1.3.0) (2020-02-04)
 
 
