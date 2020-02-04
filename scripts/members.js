@@ -118,7 +118,7 @@ class Members extends Base {
 		const response = Charts.prepareMemberEvents(memberEvents);
 
 		const { data, memberEvents: { member : { name }} } = response;
-		Charts.drawChart(data, name);
+		Charts.drawChart([{ data, name }], name);
 		Charts.prepareChartFilters(memberId, name, this.showActivityDetals.bind(this));
 	}
 

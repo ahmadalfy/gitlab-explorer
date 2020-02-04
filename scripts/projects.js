@@ -87,7 +87,13 @@ class Projects extends Base {
 								<button title="Load Commits" @click=${() => {this.loadProjectCommits(project.id)}}>Commits</button>
 							</span>
 						</span>
-						<button title="Display Activities" @click=${()=> {this.showProjectActivities(project.id, project.name)}}>Display</button>
+						<span class="button-group">
+							<button @click=${(ev) => {this.displayButtons(ev)}}>Display</button>
+							<span class="buttons">
+							<button title="Display Activities" @click=${()=> {this.showProjectActivities(project.id, project.name)}}>Activities</button>
+							<button title="Display Commits" @click=${()=> {this.showProjectCommits(project.id, project.name)}}>Commits</button>
+							</span>
+						</span>
 						<button @click=${()=> {this.appendToChart(project.id, project.name)}}>+</button>
 					</td>
 				</tr>
@@ -128,6 +134,13 @@ class Projects extends Base {
 
 	async getProjectEvents(projectId) {
 		return await db.events
+			.where('project_id')
+			.equals(projectId)
+			.with({ project: 'project_id' });
+	}
+
+	async getProjectCommits(projectId) {
+		return await db.commits
 			.where('project_id')
 			.equals(projectId)
 			.with({ project: 'project_id' });
@@ -183,6 +196,7 @@ class Projects extends Base {
 				'id',
 			].forEach(key => { delete commit[key] });
 			commit.project_id = projectId;
+			commit.creation_day = new Date(commit.authored_date).setHours(0, 0, 0, 0);
 		});
 		db.commits.bulkPut(commits);
 	}
@@ -191,7 +205,14 @@ class Projects extends Base {
 		let projectEvents = await this.getProjectEvents(projectId);
 		const updatedEvents = Charts.prepareProjectEvents(projectEvents);
 		const { data } = updatedEvents;
-		Charts.drawChart(data, projectName, 'areaspline');
+		Charts.drawChart([{ data, name: projectName }], projectName, 'areaspline');
+		Charts.prepareChartFilters();
+	}
+
+	async showProjectCommits(projectId, projectName) {
+		let projectCommits = await this.getProjectCommits(projectId);
+		const formattedCommitsSerieses = Charts.prepareProjectCommits(projectCommits);
+		Charts.drawChart(formattedCommitsSerieses, projectName, 'area');
 		Charts.prepareChartFilters();
 	}
 
