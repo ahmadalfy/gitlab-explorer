@@ -214,8 +214,56 @@ class Projects extends Base {
 	async showProjectCommits(projectId, projectName) {
 		let projectCommits = await this.getProjectCommits(projectId);
 		const formattedCommitsSerieses = Charts.prepareProjectCommits(projectCommits);
-		Charts.drawChart(formattedCommitsSerieses, projectName, 'area');
+		Charts.drawChart(formattedCommitsSerieses, projectName, 'area', this.drawDayCommits, { projectId });
 		Charts.prepareChartFilters();
+	}
+
+	async drawDayCommits({ ev, projectId }) {
+		const day = ev.point.category;
+		const dayBeginning = new Date(new Date(day).setHours(0, 0, 0, 0));
+		const dayEnding = new Date(new Date(day).setHours(23,59,59));
+		const dayCommits = await db.commits
+			.where('authored_date')
+			.between(dayBeginning, dayEnding)
+			.toArray();
+		document.querySelector('#commits-panel').style.display = 'flex';
+		console.log(dayCommits);
+		const commitsTemplate = [];
+		for ( const commit of dayCommits) {
+			if (projectId === commit.project_id) {
+				commitsTemplate.push(html`
+					<tr>
+						<td>${commit.short_id}</td>
+						<td width="50%" title="${commit.message}">${commit.title}</td>
+						<td>${commit.author_name}</td>
+						<td>${new Date(commit.authored_date).toTimeString().split(' ')[0]}</td>
+						<td class="additions">+${commit.stats.additions}</td>
+						<td class="deletions">-${commit.stats.deletions}</td>
+					</tr>
+				`);
+			}
+		}
+		const nodes = html`
+		<table class="listing">
+			<thead>
+				<tr>
+					<th rowspan="2">id</th>
+					<th rowspan="2">Title</th>
+					<th rowspan="2">Author</th>
+					<th rowspan="2">Time</th>
+					<th colspan="2">Statistics</th>
+				</tr>
+				<tr>
+					<th>Additions</th>
+					<th>Deletions</th>
+				</tr>
+			</thead>
+			<tbody>
+				${commitsTemplate}
+			</tbody>
+		</table>
+	`;
+	render(nodes, document.querySelector('#commits-content'));
 	}
 
 	checkData() {
