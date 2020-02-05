@@ -118,6 +118,7 @@ class Charts {
 			},
 			xAxis: {
 				type: 'datetime',
+				maxZoom: 24 * 3600000
 			},
 			series,
 			tooltip: {
