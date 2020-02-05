@@ -19,6 +19,7 @@ class Base {
 
 	bindEvents() {
 		document.querySelector(`#load-${this.component}`).addEventListener('click', this.fetchItems.bind(this));
+		document.addEventListener('click', this.closePanel.bind(this));
 	}
 
 	fetchItems() {
@@ -26,6 +27,12 @@ class Base {
 		this.dataService[fetcher]().then(data => {
 			this.drawListing(data);
 		});
+	}
+
+	closePanel(ev) {
+		if(ev.target.classList.contains('close-panel')) {
+			ev.target.closest('.panel').style.display = 'none';
+		}
 	}
 
 	drawListing() {

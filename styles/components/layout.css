@@ -2,7 +2,34 @@
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: 20px calc(45% - 40px) 55%;
+	grid-template-areas:
+		"header header"
+		"groups projects"
+		"members data";
 	height: 100vh;
 	grid-gap: 10px;
 	padding: 10px;
+}
+
+#groups-panel {
+	grid-area: groups;
+}
+
+#projects-panel {
+	grid-area: projects;
+}
+
+#members-panel {
+	grid-area: members;
+}
+
+#data-panel {
+	grid-area: data;
+}
+
+#commits-panel {
+	grid-area: groups;
+	z-index: 1;
+	display: none;
+	background: #fff;
 }
