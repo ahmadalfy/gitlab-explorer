@@ -198,6 +198,7 @@ class Projects extends Base {
 			].forEach(key => { delete commit[key] });
 			commit.project_id = projectId;
 			commit.creation_day = new Date(commit.authored_date).setHours(0, 0, 0, 0);
+			commit.authored_date = new Date(commit.authored_date);
 		});
 		db.commits.bulkPut(commits);
 	}
