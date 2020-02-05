@@ -56,6 +56,7 @@ class Projects extends Base {
 		const data = {
 			with_stats: true,
 			per_page: 500,
+			all: true,
 			...(afterDate ? { since: afterDate } : {})
 		}
 		const searchParams = new URLSearchParams(data).toString();
