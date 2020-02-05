@@ -104,7 +104,7 @@ class Charts {
 		}];
 	}
 
-	static drawChart(series, title, area) {
+	static drawChart(series, title, area, callback, callbackArgs) {
 		this.chart = Highcharts.chart('charts', {
 			chart: {
 				zoomType: 'x',
@@ -129,6 +129,15 @@ class Charts {
 					cursor: 'pointer',
 					marker: {
 						lineWidth: 1,
+					},
+					point: {
+						events: {
+							click: (ev) => {
+								if (typeof callback === 'function') {
+									callback({ ...callbackArgs, ev })
+								}
+							}
+						}
 					}
 				},
 				areaspline: {
