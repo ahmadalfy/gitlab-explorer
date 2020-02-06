@@ -219,7 +219,7 @@ class Projects extends Base {
 	async showProjectCommits(projectId, projectName) {
 		let projectCommits = await this.getProjectCommits(projectId);
 		const formattedCommitsSerieses = Charts.prepareProjectCommits(projectCommits);
-		Charts.drawChart(formattedCommitsSerieses, projectName, 'area', this.drawDayCommits, { projectId });
+		Charts.drawChart(formattedCommitsSerieses, projectName, 'area', this.drawDayCommits.bind(this), { projectId });
 		Charts.prepareChartFilters();
 	}
 
