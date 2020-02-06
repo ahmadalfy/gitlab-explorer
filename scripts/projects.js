@@ -287,6 +287,11 @@ class Projects extends Base {
 			if (change.new_file) {
 				diffs.push(`new file mode ${change.b_mode}`);
 			}
+			if (change.deleted_file) {
+				diffs.push(`deleted file mode ${change.a_mode}`);
+				diffs.push(`--- a/${change.old_path}`);
+				diffs.push('+++ /dev/null');
+			}
 			diffs.push(change.diff);
 		});
 		document.querySelector('#diffs-panel').style.display = 'flex';
