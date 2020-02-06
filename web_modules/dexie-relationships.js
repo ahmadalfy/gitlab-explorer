@@ -1,5 +1,5 @@
 import require$$0 from './dexie.js';
-import { c as createCommonjsModule, a as commonjsGlobal } from './common/_commonjsHelpers-28d57e96.js';
+import { c as createCommonjsModule, a as commonjsGlobal } from './common/_commonjsHelpers-7dcf7119.js';
 
 var dist = createCommonjsModule(function (module, exports) {
 (function (global, factory) {

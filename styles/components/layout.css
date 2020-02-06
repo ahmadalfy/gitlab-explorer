@@ -33,3 +33,10 @@
 	display: none;
 	background: #fff;
 }
+
+#diffs-panel {
+	grid-area: members-start / members-start / data-end / data-end;
+	z-index: 1;
+	display: none;
+	background: #fff;
+}

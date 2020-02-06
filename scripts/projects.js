@@ -1,4 +1,5 @@
 import { html, render } from '../web_modules/lit-html.js';
+import Diff2Html from '../web_modules/diff2html/bundles/js/diff2html.min.js';
 import Utilities from './utilities.js';
 import routes from './routes.js';
 import Groups from './groups.js';
@@ -61,6 +62,10 @@ class Projects extends Base {
 		}
 		const searchParams = new URLSearchParams(data).toString();
 		return Utilities.req(`${routes.projects}/${projectId}/${routes.repository}/${routes.commits}`, searchParams);
+	}
+
+	loadCommit(projectId, commitId) {
+		return Utilities.req(`${routes.projects}/${projectId}/${routes.repository}/${routes.commits}/${commitId}/diff`);
 	}
 
 	drawListing(projects) {
@@ -239,6 +244,9 @@ class Projects extends Base {
 						<td>${new Date(commit.authored_date).toTimeString().split(' ')[0]}</td>
 						<td class="additions">+${commit.stats.additions}</td>
 						<td class="deletions">-${commit.stats.deletions}</td>
+						<td>
+							<button @click=${() => {this.getCommitDetails(projectId, commit.short_id);}}>Details</button>
+						</td>
 					</tr>
 				`);
 			}
@@ -252,6 +260,7 @@ class Projects extends Base {
 					<th rowspan="2">Author</th>
 					<th rowspan="2">Time</th>
 					<th colspan="2">Statistics</th>
+						<th rowspan="2">Actions</th>
 				</tr>
 				<tr>
 					<th>Additions</th>
@@ -264,6 +273,24 @@ class Projects extends Base {
 		</table>
 	`;
 	render(nodes, document.querySelector('#commits-content'));
+	}
+
+	async getCommitDetails(projectId, commitId) {
+		const commit = await this.loadCommit(projectId, commitId);
+		this.constructDiffString(commit);
+	}
+
+	constructDiffString(commit) {
+		const diffs = [];
+		commit.forEach(change => {
+			diffs.push(`diff --git a/${change.old_path} b/${change.new_path}`);
+			if (change.new_file) {
+				diffs.push(`new file mode ${change.b_mode}`);
+			}
+			diffs.push(change.diff);
+		});
+		document.querySelector('#diffs-panel').style.display = 'flex';
+		document.querySelector('#diffs-content').innerHTML = Diff2Html.html(diffs.join('\n'));
 	}
 
 	checkData() {
