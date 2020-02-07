@@ -56,7 +56,7 @@ class Projects extends Base {
 	loadCommits(projectId, afterDate) {
 		const data = {
 			with_stats: true,
-			per_page: 500,
+			per_page: 100,
 			all: true,
 			...(afterDate ? { since: afterDate } : {})
 		}
@@ -100,6 +100,7 @@ class Projects extends Base {
 							<button title="Display Commits" @click=${()=> {this.showProjectCommits(project.id, project.name)}}>Commits</button>
 							</span>
 						</span>
+						<button @click=${()=> {this.showProjectCommits(project.id, project.name)}}>C</button>
 						<button @click=${()=> {this.appendToChart(project.id, project.name)}}>+</button>
 					</td>
 				</tr>
@@ -232,7 +233,6 @@ class Projects extends Base {
 			.between(dayBeginning, dayEnding)
 			.toArray();
 		document.querySelector('#commits-panel').style.display = 'flex';
-		console.log(dayCommits);
 		const commitsTemplate = [];
 		for ( const commit of dayCommits) {
 			if (projectId === commit.project_id) {
@@ -252,27 +252,27 @@ class Projects extends Base {
 			}
 		}
 		const nodes = html`
-		<table class="listing">
-			<thead>
-				<tr>
-					<th rowspan="2">id</th>
-					<th rowspan="2">Title</th>
-					<th rowspan="2">Author</th>
-					<th rowspan="2">Time</th>
-					<th colspan="2">Statistics</th>
+			<table class="listing">
+				<thead>
+					<tr>
+						<th rowspan="2">id</th>
+						<th rowspan="2">Title</th>
+						<th rowspan="2">Author</th>
+						<th rowspan="2">Time</th>
+						<th colspan="2">Statistics</th>
 						<th rowspan="2">Actions</th>
-				</tr>
-				<tr>
-					<th>Additions</th>
-					<th>Deletions</th>
-				</tr>
-			</thead>
-			<tbody>
-				${commitsTemplate}
-			</tbody>
-		</table>
-	`;
-	render(nodes, document.querySelector('#commits-content'));
+					</tr>
+					<tr>
+						<th>Additions</th>
+						<th>Deletions</th>
+					</tr>
+				</thead>
+				<tbody>
+					${commitsTemplate}
+				</tbody>
+			</table>
+		`;
+		render(nodes, document.querySelector('#commits-content'));
 	}
 
 	async getCommitDetails(projectId, commitId) {

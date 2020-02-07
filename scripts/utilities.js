@@ -1,15 +1,22 @@
 import env from '../env.js';
 
 class Utilities {
-	static async req(api, qs = 'per_page=500', method = 'GET', headers = {}) {
-		const response = await fetch(`${env.baseUrl}/api/v4/${api}?${qs}`, {
+	static async req(api, qs = 'per_page=100', method = 'GET', headers = {}, page = 1, data = []) {
+		let response = await fetch(`${env.baseUrl}/api/v4/${api}?${qs}&page=${page}`, {
 			method,
 			headers: {
 				...headers,
 				'PRIVATE-TOKEN': env.token,
 			}
 		});
-		return await response.json();
+		response = await response.json();
+		const updatedResponse = [...data, ...response];
+		if (response.length === 100 ) {
+			var nextPage = page + 1;
+			return Utilities.req(api, qs, method, headers, nextPage, updatedResponse);
+		} else {
+			return updatedResponse;
+		}
 	}
 
 	static debounce(func, wait, immediate) {
