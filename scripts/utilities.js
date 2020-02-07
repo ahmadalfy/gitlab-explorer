@@ -11,7 +11,7 @@ class Utilities {
 		});
 		response = await response.json();
 		const updatedResponse = [...data, ...response];
-		if (response.length === 100 ) {
+		if (response.length > 0 ) {
 			var nextPage = page + 1;
 			return Utilities.req(api, qs, method, headers, nextPage, updatedResponse);
 		} else {
