@@ -15,7 +15,7 @@
 					<button id="delete-db">Delete Database</button>
 				</p>
 			</header>
-			<div class="panel">
+			<div class="panel" id="groups-panel">
 				<div class="panel__head">
 					<h1 class="panel__title">Groups</h1>
 					<div class="panel__actions">
@@ -31,7 +31,7 @@
 					<p>Last update: <span id="groups-update">loading</span></p>
 				</div>
 			</div>
-			<div class="panel">
+			<div class="panel" id="projects-panel">
 				<div class="panel__head">
 					<h1 class="panel__title">Projects</h1>
 					<div class="panel__actions">
@@ -47,7 +47,7 @@
 					<p>Last update: <span id="projects-update">loading</span></p>
 				</div>
 			</div>
-			<div class="panel">
+			<div class="panel" id="members-panel">
 				<div class="panel__head">
 					<h1 class="panel__title">Members</h1>
 					<div class="panel__actions">
@@ -63,7 +63,7 @@
 					<p>Last update: <span id="members-update"></span></p>
 				</div>
 			</div>
-			<div class="panel">
+			<div class="panel" id="data-panel">
 				<div class="panel__head">
 					<h1 class="panel__title">Data</h1>
 					<div class="panel__actions" id="zoom-options"></div>
@@ -73,6 +73,32 @@
 				</div>
 				<div class="panel__footer">
 				</div>
+			</div>
+			<div class="panel" id="commits-panel">
+				<div class="panel__head">
+					<h1 class="panel__title">Commits</h1>
+					<div class="panel__actions" id="commits-filters">
+						<div class="panel__actions-list" id="commits-filters"></div>
+						<button class="close-panel">Close</button>
+					</div>
+				</div>
+				<div class="panel__content">
+					<div id="commits-content"></div>
+				</div>
+				<div class="panel__footer"></div>
+			</div>
+			<div class="panel" id="diffs-panel">
+				<div class="panel__head">
+					<h1 class="panel__title">Files changed</h1>
+					<div class="panel__actions" id="diffs-filters">
+						<div class="panel__actions-list" id="diffs-filters"></div>
+						<button class="close-panel">Close</button>
+					</div>
+				</div>
+				<div class="panel__content">
+					<div id="diffs-content"></div>
+				</div>
+				<div class="panel__footer"></div>
 			</div>
 		</div>
 		<script type="module" src="scripts/app.js"></script>

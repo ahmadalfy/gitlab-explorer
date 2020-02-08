@@ -1,0 +1,9 @@
+.additions {
+	color: #13bb03;
+	text-align: center;
+}
+
+.deletions {
+	color: red;
+	text-align: center;
+}

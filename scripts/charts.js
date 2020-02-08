@@ -60,25 +60,67 @@ class Charts {
 		return { data: formattedData, groupedEvents };
 	}
 
-	static drawChart(data, name, area) {
+	static prepareProjectCommits(projectCommits) {
+		const groupedCommits = projectCommits.reduce((acc, obj)=> {
+			let key = obj.creation_day
+			if (!acc[key]) {
+				acc[key] = []
+			}
+				acc[key].push(obj)
+			return acc
+		}, {});
+		const additionSeries = [];
+		const deletionSeries = [];
+		for (let date in groupedCommits) {
+			let additions = 0;
+			let deletions = 0;
+			groupedCommits[date].forEach(commit => {
+				additions += commit.stats.additions;
+				deletions += commit.stats.deletions;
+			});
+			additionSeries.push([JSON.parse(date), additions]);
+			deletionSeries.push([JSON.parse(date), -(deletions)]);
+		}
+		const sortByDate = (a, b) => {
+			if (a[0] > b[0]) {
+				return -1;
+			}
+			if (a[0] < b[0]) {
+				return 1;
+			}
+			return 0;
+		}
+		additionSeries.sort(sortByDate);
+		deletionSeries.sort(sortByDate);
+
+		return [{
+			data: additionSeries,
+			name: 'Additions',
+			color: '#00ff00'
+		}, {
+			data: deletionSeries,
+			name: 'Deletions',
+			color: '#ff0000'
+		}];
+	}
+
+	static drawChart(series, title, area, callback, callbackArgs) {
 		this.chart = Highcharts.chart('charts', {
 			chart: {
 				zoomType: 'x',
 				type: area,
 			},
 			title: {
-				text: `Activity of ${name}`
+				text: `Activity of ${title}`
 			},
 			subtitle: {
 				text: `Source: Gitlab Activities`
 			},
 			xAxis: {
 				type: 'datetime',
+				maxZoom: 24 * 3600000
 			},
-			series: [{
-				name,
-				data,
-			}],
+			series,
 			tooltip: {
 				split: true,
 			},
@@ -87,6 +129,15 @@ class Charts {
 					cursor: 'pointer',
 					marker: {
 						lineWidth: 1,
+					},
+					point: {
+						events: {
+							click: (ev) => {
+								if (typeof callback === 'function') {
+									callback({ ...callbackArgs, ev })
+								}
+							}
+						}
 					}
 				},
 				areaspline: {

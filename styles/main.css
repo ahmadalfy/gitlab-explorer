@@ -7,6 +7,11 @@
 @import "./objects/listings.css";
 @import "./objects/panels.css";
 
+/* Vendor */
+@import "./vendor/diff2html.css";
+
 /* Components */
 @import "./components/layout.css";
 @import "./components/app-header.css";
+@import "./components/commits-list.css";
+@import "./components/commit-details.css";

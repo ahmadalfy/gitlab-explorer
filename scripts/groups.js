@@ -23,7 +23,13 @@ class Groups extends Base {
 	}
 
 	static loadGroupProjects(groupId) {
-		return Utilities.req(`${routes.groups}/${groupId}/${routes.projects}`);
+		const data = {
+			simple: true,
+			order_by: 'last_activity_at',
+			per_page: 100,
+		}
+		const searchParams = new URLSearchParams(data).toString();
+		return Utilities.req(`${routes.groups}/${groupId}/${routes.projects}`, searchParams);
 	}
 
 	drawListing(groups) {

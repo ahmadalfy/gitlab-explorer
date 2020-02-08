@@ -3,6 +3,7 @@
     "dexie": "./dexie.js",
     "dexie-export-import": "./dexie-export-import.js",
     "dexie-relationships": "./dexie-relationships.js",
+    "diff2html/bundles/js/diff2html.min": "./diff2html/bundles/js/diff2html.min.js",
     "downloadjs": "./downloadjs.js",
     "highcharts": "./highcharts.js",
     "javascript-time-ago": "./javascript-time-ago.js",

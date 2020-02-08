@@ -1,0 +1,15 @@
+.d2h-code-linenumber {
+	position: static;
+	display: table-cell;
+	vertical-align: top;
+}
+
+.d2h-diff-table {
+	table-layout: fixed;
+}
+
+.d2h-file-list-title {
+	font-size: 14px;
+	margin: 10px 0 0 10px;
+	display: block;
+}

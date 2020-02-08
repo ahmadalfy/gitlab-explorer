@@ -1,4 +1,5 @@
 import { html, render } from '../web_modules/lit-html.js';
+import Diff2Html from '../web_modules/diff2html/bundles/js/diff2html.min.js';
 import Utilities from './utilities.js';
 import routes from './routes.js';
 import Groups from './groups.js';
@@ -52,8 +53,19 @@ class Projects extends Base {
 		return Utilities.req(`${routes.projects}/${projectId}/${routes.events}`);
 	}
 
-	loadCommits(projectId) {
-		return Utilities.req(`${routes.projects}/${projectId}/${routes.repository}/${routes.commits}`);
+	loadCommits(projectId, afterDate) {
+		const data = {
+			with_stats: true,
+			per_page: 100,
+			all: true,
+			...(afterDate ? { since: afterDate } : {})
+		}
+		const searchParams = new URLSearchParams(data).toString();
+		return Utilities.req(`${routes.projects}/${projectId}/${routes.repository}/${routes.commits}`, searchParams);
+	}
+
+	loadCommit(projectId, commitId) {
+		return Utilities.req(`${routes.projects}/${projectId}/${routes.repository}/${routes.commits}/${commitId}/diff`);
 	}
 
 	drawListing(projects) {
@@ -81,7 +93,14 @@ class Projects extends Base {
 								<button title="Load Commits" @click=${() => {this.loadProjectCommits(project.id)}}>Commits</button>
 							</span>
 						</span>
-						<button title="Display Activities" @click=${()=> {this.showProjectActivities(project.id, project.name)}}>Display</button>
+						<span class="button-group">
+							<button @click=${(ev) => {this.displayButtons(ev)}}>Display</button>
+							<span class="buttons">
+							<button title="Display Activities" @click=${()=> {this.showProjectActivities(project.id, project.name)}}>Activities</button>
+							<button title="Display Commits" @click=${()=> {this.showProjectCommits(project.id, project.name)}}>Commits</button>
+							</span>
+						</span>
+						<button @click=${()=> {this.showProjectCommits(project.id, project.name)}}>C</button>
 						<button @click=${()=> {this.appendToChart(project.id, project.name)}}>+</button>
 					</td>
 				</tr>
@@ -127,6 +146,13 @@ class Projects extends Base {
 			.with({ project: 'project_id' });
 	}
 
+	async getProjectCommits(projectId) {
+		return await db.commits
+			.where('project_id')
+			.equals(projectId)
+			.with({ project: 'project_id' });
+	}
+
 	async appendToChart(projectId, projectName) {
 		let projectEvents = await this.getProjectEvents(projectId);
 		const response = Charts.prepareProjectEvents(projectEvents);
@@ -143,16 +169,133 @@ class Projects extends Base {
 		db.events.bulkPut(events);
 	}
 
+	/**
+	 * loadProjectCommits get the project commits since the last commit stored in the db.
+	 * We the last commit for the project from the database using the last `authored_date`
+	 * then request the commits from the API. The result is cleaned from the un-needed keys
+	 * to keep the db as small as we can.
+	 * @param {Number} projectId
+	 */
 	async loadProjectCommits(projectId) {
-		const commits = await this.loadCommits(projectId);
+		let commits;
+		let afterDate;
+		await db.commits
+			.where('project_id')
+			.equals(projectId)
+			.reverse()
+			.sortBy('authored_date')
+			.then(commits => {
+				if (commits.length > 0) {
+					afterDate = commits[0].authored_date;
+				}
+			}
+		);
+		commits = await this.loadCommits(projectId, afterDate);
+		commits.forEach(commit => {
+			[
+				'created_at',
+				'author_email',
+				'committed_date',
+				'committer_email',
+				'committed_date',
+				'committer_name',
+				'created_at',
+				'id',
+			].forEach(key => { delete commit[key] });
+			commit.project_id = projectId;
+			commit.creation_day = new Date(commit.authored_date).setHours(0, 0, 0, 0);
+			commit.authored_date = new Date(commit.authored_date);
+		});
+		db.commits.bulkPut(commits);
 	}
 
 	async showProjectActivities(projectId, projectName) {
 		let projectEvents = await this.getProjectEvents(projectId);
 		const updatedEvents = Charts.prepareProjectEvents(projectEvents);
 		const { data } = updatedEvents;
-		Charts.drawChart(data, projectName, 'areaspline');
+		Charts.drawChart([{ data, name: projectName }], projectName, 'areaspline');
 		Charts.prepareChartFilters();
+	}
+
+	async showProjectCommits(projectId, projectName) {
+		let projectCommits = await this.getProjectCommits(projectId);
+		const formattedCommitsSerieses = Charts.prepareProjectCommits(projectCommits);
+		Charts.drawChart(formattedCommitsSerieses, projectName, 'area', this.drawDayCommits.bind(this), { projectId });
+		Charts.prepareChartFilters();
+	}
+
+	async drawDayCommits({ ev, projectId }) {
+		const day = ev.point.category;
+		const dayBeginning = new Date(new Date(day).setHours(0, 0, 0, 0));
+		const dayEnding = new Date(new Date(day).setHours(23,59,59));
+		const dayCommits = await db.commits
+			.where('authored_date')
+			.between(dayBeginning, dayEnding)
+			.toArray();
+		document.querySelector('#commits-panel').style.display = 'flex';
+		const commitsTemplate = [];
+		for ( const commit of dayCommits) {
+			if (projectId === commit.project_id) {
+				commitsTemplate.push(html`
+					<tr>
+						<td>${commit.short_id}</td>
+						<td width="50%" title="${commit.message}">${commit.title}</td>
+						<td>${commit.author_name}</td>
+						<td>${new Date(commit.authored_date).toTimeString().split(' ')[0]}</td>
+						<td class="additions">+${commit.stats.additions}</td>
+						<td class="deletions">-${commit.stats.deletions}</td>
+						<td>
+							<button @click=${() => {this.getCommitDetails(projectId, commit.short_id);}}>Details</button>
+						</td>
+					</tr>
+				`);
+			}
+		}
+		const nodes = html`
+			<table class="listing">
+				<thead>
+					<tr>
+						<th rowspan="2">id</th>
+						<th rowspan="2">Title</th>
+						<th rowspan="2">Author</th>
+						<th rowspan="2">Time</th>
+						<th colspan="2">Statistics</th>
+						<th rowspan="2">Actions</th>
+					</tr>
+					<tr>
+						<th>Additions</th>
+						<th>Deletions</th>
+					</tr>
+				</thead>
+				<tbody>
+					${commitsTemplate}
+				</tbody>
+			</table>
+		`;
+		render(nodes, document.querySelector('#commits-content'));
+	}
+
+	async getCommitDetails(projectId, commitId) {
+		const commit = await this.loadCommit(projectId, commitId);
+		this.constructDiffString(commit);
+	}
+
+	constructDiffString(commit) {
+		const diffs = [];
+		commit.forEach(change => {
+			diffs.push(`diff --git a/${change.old_path} b/${change.new_path}`);
+			if (change.new_file) {
+				diffs.push(`new file mode ${change.b_mode}`);
+			}
+			if (change.deleted_file) {
+				diffs.push(`deleted file mode ${change.a_mode}`);
+				diffs.push(`--- a/${change.old_path}`);
+				diffs.push('+++ /dev/null');
+			}
+			diffs.push(change.diff);
+		});
+		document.querySelector('#diffs-panel').style.display = 'flex';
+		document.querySelector('#diffs-content').innerHTML = Diff2Html.html(diffs.join('\n'));
 	}
 
 	checkData() {

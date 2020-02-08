@@ -21,24 +21,31 @@ class Members extends Base {
 		return Promise.all(groups.map(group => Groups.loadGroupMembers(group.id)))
 	}
 
-	loadEvents(userId) {
-		return Utilities.req(`${routes.users}/${userId}/${routes.events}`);
+	loadEvents(userId, after = '') {
+		const data = {
+			per_page: 100,
+			...(after && after !== 'NA' ? { after } : {})
+		}
+		const searchParams = new URLSearchParams(data).toString();
+		return Utilities.req(`${routes.users}/${userId}/${routes.events}`, searchParams);
 	}
 
 	/**
-	 * getEvents get the last 100 activity and store them in the database
+	 * getEvents get the activities and store them in the database
 	 * @param {Event} ev
 	 * @param {String} memberId
 	 */
 	async getEvents(ev, memberId) {
+		// Store reference to DOM nodes to update them later
 		const activityCell = ev.target.closest('tr').querySelector('.member-activity');
 		const updateCell = ev.target.closest('tr').querySelector('.last-update');
-		const events = await this.loadEvents(memberId);
+		// Get member's latest activity
+		const latestActivity = await db.members.get(memberId).then(member => member.last_activity);
+		const events = await this.loadEvents(memberId, latestActivity);
 		// If the user has no events, update the view and db with 'NA'
 		if (events.length === 0) {
-			db.members.update(memberId, { last_activity: 'NA', last_update: 'NA' });
-			activityCell.innerHTML = 'NA';
-			updateCell.innerHTML = 'NA';
+			await db.members.update(memberId, { last_update: Date.now() });
+			updateCell.innerHTML = timeAgo.format(Date.now());
 			return;
 		}
 		/**
@@ -118,7 +125,7 @@ class Members extends Base {
 		const response = Charts.prepareMemberEvents(memberEvents);
 
 		const { data, memberEvents: { member : { name }} } = response;
-		Charts.drawChart(data, name);
+		Charts.drawChart([{ data, name }], name);
 		Charts.prepareChartFilters(memberId, name, this.showActivityDetals.bind(this));
 	}
 
