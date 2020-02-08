@@ -1,3 +1,31 @@
+# [1.5.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.4.0...v1.5.0) (2020-02-08)
+
+
+### Bug Fixes
+
+* **Commit:** Display deleted fiiles as deleted ([815faba](https://github.com/ahmadalfy/gitlab-explorer/commit/815fabafd54f563764a5aea5f2faa553ae17ce4b))
+* **Commit:** Wrong reference to `this` ([6500da7](https://github.com/ahmadalfy/gitlab-explorer/commit/6500da7e2c707ada44bfe54ab62b1af5a66124ac))
+* **projects:** Get projects based on last activity ([2c595a8](https://github.com/ahmadalfy/gitlab-explorer/commit/2c595a82eca6334d0fc534f7dc4cfcf21e827580))
+
+
+### Features
+
+* Get member's new events only ([9ebdd02](https://github.com/ahmadalfy/gitlab-explorer/commit/9ebdd02f210dceeba982efd6de7ba91839a173bb))
+* Requests now grab all available data ([3fe7a7b](https://github.com/ahmadalfy/gitlab-explorer/commit/3fe7a7bb888c910d889337483fb6ff4c1e47134e))
+* **Charts:** Add callback to chart drawing ([a197430](https://github.com/ahmadalfy/gitlab-explorer/commit/a1974303b0c079a481697e9e00a84060073025ff))
+* **Commit:** Display diff between 2 commits ([5302713](https://github.com/ahmadalfy/gitlab-explorer/commit/53027136b19734f81b86aea558bfe52af9f677f6))
+* **Commits:** Draw commits in a separate panel ([f6d56f4](https://github.com/ahmadalfy/gitlab-explorer/commit/f6d56f4cb0639cf647871288350851bab6738d63))
+* Add query strings to the request utility ([ec24931](https://github.com/ahmadalfy/gitlab-explorer/commit/ec24931e5c1579f12ba4c0a990e8a467c279ca56))
+* Draw commits additions vs deletions ([1312baf](https://github.com/ahmadalfy/gitlab-explorer/commit/1312bafb779aeb7f9e040e41705cee0861c00bd5))
+* Fetch and store project commits ([d10154d](https://github.com/ahmadalfy/gitlab-explorer/commit/d10154d23ba93c0c9416eba127151ce8e03ef911))
+* Set maximum zoom level to one day ([9a62032](https://github.com/ahmadalfy/gitlab-explorer/commit/9a620322183143ef9a5ec35321a49750e6e39389))
+* **Commits:** Add commits panel ([eb08940](https://github.com/ahmadalfy/gitlab-explorer/commit/eb0894096ecd5d945eca633d984123e1c62bbf01))
+
+
+### Performance Improvements
+
+* Request less project info to reduce db size ([310db98](https://github.com/ahmadalfy/gitlab-explorer/commit/310db989e7b194a0d1ba8d018d7abd518c12f3ac))
+
 # [1.4.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.3.0...v1.4.0) (2020-02-04)
 
 
