@@ -53,8 +53,10 @@ class Base {
 	}
 
 	updateLastModified() {
-		const lastModified = localStorage.getItem(this.component);
-		document.querySelector(`#${this.component}-update`).innerHTML = lastModified ? timeAgo.format(JSON.parse(lastModified)) : 'Not available';
+		db.logs.get(this.component,(item)=> {
+			document.querySelector(`#${this.component}-update`).innerHTML = item ? 
+				timeAgo.format(JSON.parse(item.last_updated)) : 'Not available';
+		});
 	}
 
 	prepareFilters() {
