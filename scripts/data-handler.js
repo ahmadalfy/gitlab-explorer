@@ -19,7 +19,10 @@ class DataSource {
 		const groups = await Groups.load();
 		this.data.groups = groups;
 		db.groups.bulkPut(groups);
-		localStorage.setItem('groups', Date.now());
+		db.logs.put({
+			last_updated: Date.now(),
+			id: 'groups'
+		});
 		return this.data.groups;
 	}
 
@@ -30,7 +33,10 @@ class DataSource {
 			project.group_id = project.namespace.id;
 		});
 		db.projects.bulkPut(this.data.projects);
-		localStorage.setItem('projects', Date.now());
+		db.logs.put({
+			last_updated: Date.now(),
+			id: 'projects'
+		});
 		return this.data.projects;
 	}
 
@@ -39,7 +45,10 @@ class DataSource {
 		const key = 'id';
 		this.data.members = [...new Map(members.flat().map(item => [item[key], item])).values()];
 		db.members.bulkPut(this.data.members);
-		localStorage.setItem('members', Date.now());
+		db.logs.put({
+			last_updated: Date.now(),
+			id: 'members'
+		});
 		return this.data.members;
 	}
 }
