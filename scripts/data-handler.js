@@ -44,6 +44,7 @@ class DataSource {
 		const members = await Members.load(this.data.groups);
 		const key = 'id';
 		this.data.members = [...new Map(members.flat().map(item => [item[key], item])).values()];
+		db.members.bulkPut(this.data.members);
 		db.logs.put({
 			last_updated: Date.now(),
 			id: 'members'
