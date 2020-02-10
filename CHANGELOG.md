@@ -1,3 +1,16 @@
+# [1.6.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.5.0...v1.6.0) (2020-02-10)
+
+
+### Bug Fixes
+
+* add fetched members to DB ([26b3f85](https://github.com/ahmadalfy/gitlab-explorer/commit/26b3f85c2e2486da921fb1631630e780ff198931))
+
+
+### Features
+
+* **logs:** Move logs to the database ([a0a9a6f](https://github.com/ahmadalfy/gitlab-explorer/commit/a0a9a6f31d25cd5395297e965b7544ab266bef4d))
+* store last updates in log ([21afb11](https://github.com/ahmadalfy/gitlab-explorer/commit/21afb111a92b0d47953ecfac4dfa813519dbb748))
+
 # [1.5.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.4.0...v1.5.0) (2020-02-08)
 
 
