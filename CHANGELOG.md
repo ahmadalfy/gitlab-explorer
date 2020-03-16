@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.6.0...v1.7.0) (2020-03-16)
+
+
+### Features
+
+* bump dependencies ([acb462d](https://github.com/ahmadalfy/gitlab-explorer/commit/acb462ddd05ce0a59f0f213d8742c6a882708ee6))
+
 # [1.6.0](https://github.com/ahmadalfy/gitlab-explorer/compare/v1.5.0...v1.6.0) (2020-02-10)
 
 
