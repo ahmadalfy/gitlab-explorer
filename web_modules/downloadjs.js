@@ -63,13 +63,13 @@ var download = createCommonjsModule(function (module, exports) {
 			if(payload.length > (1024*1024*1.999) && myBlob !== toString ){
 				payload=dataUrlToBlob(payload);
 				mimeType=payload.type || defaultMime;
-			}else{			
+			}else {			
 				return navigator.msSaveBlob ?  // IE10 can't do a[download], only Blobs:
 					navigator.msSaveBlob(dataUrlToBlob(payload), fileName) :
 					saver(payload) ; // everyone else can save dataURLs un-processed
 			}
 			
-		}else{//not data url, is it a string with special needs?
+		}else {//not data url, is it a string with special needs?
 			if(/([\x80-\xff])/.test(payload)){			  
 				var i=0, tempUiArr= new Uint8Array(payload.length), mx=tempUiArr.length;
 				for(i;i<mx;++i) tempUiArr[i]= payload.charCodeAt(i);
@@ -142,7 +142,7 @@ var download = createCommonjsModule(function (module, exports) {
 
 		if(self.URL){ // simple fast and modern way using Blob and URL:
 			saver(self.URL.createObjectURL(blob), true);
-		}else{
+		}else {
 			// handle non-Blob()+non-URL browsers:
 			if(typeof blob === "string" || blob.constructor===toString ){
 				try{

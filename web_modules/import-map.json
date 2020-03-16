@@ -3,11 +3,11 @@
     "dexie": "./dexie.js",
     "dexie-export-import": "./dexie-export-import.js",
     "dexie-relationships": "./dexie-relationships.js",
-    "diff2html/bundles/js/diff2html.min": "./diff2html/bundles/js/diff2html.min.js",
+    "diff2html/bundles/js/diff2html.min.js": "./diff2html/bundles/js/diff2html.min.js",
     "downloadjs": "./downloadjs.js",
     "highcharts": "./highcharts.js",
     "javascript-time-ago": "./javascript-time-ago.js",
-    "javascript-time-ago/locale/en/index": "./javascript-time-ago/locale/en/index.js",
+    "javascript-time-ago/locale/en/index.js": "./javascript-time-ago/locale/en/index.js",
     "lit-html": "./lit-html.js"
   }
 }
