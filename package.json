@@ -30,7 +30,7 @@
     "downloadjs": "^1.4.7",
     "highcharts": "^8.0.4",
     "javascript-time-ago": "^2.0.7",
-    "lit-html": "^1.1.2"
+    "lit-html": "^1.2.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^5.0.0",
