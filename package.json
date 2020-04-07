@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "dexie": "^2.0.4",
-    "dexie-export-import": "^1.0.0-rc.1",
+    "dexie-export-import": "^1.0.0-rc.2",
     "dexie-relationships": "^1.2.11",
     "diff2html": "^3.1.6",
     "downloadjs": "^1.4.7",
