@@ -26,9 +26,9 @@
     "dexie": "^2.0.4",
     "dexie-export-import": "^1.0.0-rc.2",
     "dexie-relationships": "^1.2.11",
-    "diff2html": "^3.1.6",
+    "diff2html": "^3.1.7",
     "downloadjs": "^1.4.7",
-    "highcharts": "^8.0.4",
+    "highcharts": "^8.1.0",
     "javascript-time-ago": "^2.0.7",
     "lit-html": "^1.2.1"
   },
@@ -36,7 +36,7 @@
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^9.0.0",
     "@semantic-release/release-notes-generator": "^9.0.1",
-    "semantic-release": "^17.0.7",
+    "semantic-release": "^17.0.8",
     "snowpack": "^1.7.1"
   },
   "snowpack": {
