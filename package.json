@@ -29,7 +29,7 @@
     "diff2html": "^3.1.9",
     "downloadjs": "^1.4.7",
     "highcharts": "^8.1.2",
-    "javascript-time-ago": "^2.0.10",
+    "javascript-time-ago": "^2.0.13",
     "lit-html": "^1.2.1"
   },
   "devDependencies": {
