@@ -1,0 +1,31 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "03:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: snowpack
+    versions:
+    - 3.0.11
+    - 3.0.12
+    - 3.0.13
+    - 3.1.2
+    - 3.2.2
+    - 3.3.0
+    - 3.3.5
+  - dependency-name: y18n
+    versions:
+    - 4.0.1
+    - 4.0.2
+  - dependency-name: diff2html
+    versions:
+    - 3.3.1
+    - 3.4.1
+    - 3.4.2
+  - dependency-name: semantic-release
+    versions:
+    - 17.3.8
+    - 17.4.0
