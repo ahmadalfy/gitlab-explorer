@@ -32,7 +32,7 @@
     "javascript-time-ago": "^2.3.4",
     "highcharts": "^9.3.0",
     "javascript-time-ago": "^2.3.9",
-    "lit-html": "^1.4.1"
+    "lit-html": "^2.0.1"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.0",
