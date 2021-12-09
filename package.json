@@ -30,14 +30,14 @@
     "downloadjs": "^1.4.7",
     "highcharts": "^9.0.1",
     "javascript-time-ago": "^2.3.4",
-    "highcharts": "^9.3.0",
+    "highcharts": "^9.3.2",
     "javascript-time-ago": "^2.3.9",
     "lit-html": "^1.4.1"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.0",
     "@semantic-release/git": "^10.0.0",
-    "@semantic-release/release-notes-generator": "^10.0.2",
+    "@semantic-release/release-notes-generator": "^10.0.3",
     "semantic-release": "^18.0.1",
     "snowpack": "^1.7.1"
   },
