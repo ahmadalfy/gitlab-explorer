@@ -23,7 +23,7 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
-    "dexie": "^2.0.4",
+    "dexie": "^3.2.2",
     "dexie-export-import": "^1.0.3",
     "dexie-relationships": "^1.2.11",
     "diff2html": "^3.4.18",
