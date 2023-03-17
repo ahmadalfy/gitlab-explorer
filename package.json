@@ -26,7 +26,7 @@
     "dexie": "^2.0.4",
     "dexie-export-import": "^1.0.3",
     "dexie-relationships": "^1.2.11",
-    "diff2html": "^3.4.19",
+    "diff2html": "^3.4.34",
     "downloadjs": "^1.4.7",
     "highcharts": "^9.0.1",
     "javascript-time-ago": "^2.3.4",
