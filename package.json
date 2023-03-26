@@ -31,7 +31,7 @@
     "highcharts": "^9.0.1",
     "javascript-time-ago": "^2.3.4",
     "highcharts": "^10.2.1",
-    "javascript-time-ago": "^2.5.7",
+    "javascript-time-ago": "^2.5.9",
     "lit-html": "^1.4.1"
   },
   "devDependencies": {
